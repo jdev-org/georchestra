@@ -45,6 +45,8 @@ public class AdminLogEntry {
     private String target;
     private AdminLogType type;
     private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+    private String oldValue;
+    private String newValue;
 
     @Column(updatable = false, nullable = false)
     @JsonIgnore
@@ -57,6 +59,15 @@ public class AdminLogEntry {
         this.target = target;
         this.type = type;
         this.date = date;
+    }
+    
+    public AdminLogEntry(String admin, String target, AdminLogType type, Date date, String oldValue, String newValue) {
+        this.admin = admin;
+        this.target = target;
+        this.type = type;
+        this.date = date;
+        this.oldValue = oldValue;
+        this.newValue = newValue;
     }
 
     public long getId() {
@@ -103,5 +114,20 @@ public class AdminLogEntry {
     public String getFormattedDate(){
         return AdminLogEntry.dateFormat.format(this.date);
     }
+    
+    public String oldValue() {
+        return oldValue;
+    }
 
+    public void setOldValue(String oldValue) {
+        this.oldValue = oldValue;
+    }
+    
+    public String newValue() {
+        return newValue;
+    }
+
+    public void setNewValue(String newValue) {
+        this.newValue = newValue;
+    }
 }
