@@ -22,7 +22,14 @@ package org.georchestra.console.model;
 public enum AdminLogType {
 
     ACCOUNT_MODERATION("Account moderation"),
+    ACCOUNT_MODERATION_ADD ("Account moderation add"),
+    ACCOUNT_MODERATION_DEL ("Account moderation deleted"),
+    ACCOUNT_MODERATION_CHANGE ("Account moderation changed"),
+    SYSTEM_ROLE_ADD("Sytem role added"),
+    SYSTEM_ROLE_DEL("Sytem role deleted"),
     SYSTEM_ROLE_CHANGE("System role"),
+    OTHERROLE_ADD("Sytem role added"),
+    OTHER_ROLE_DEL("Sytem role deleted"),
     OTHER_ROLE_CHANGE("Other role"),
     LDAP_ATTRIBUTE_CHANGE("User attributes"),
     EMAIL_SENT("Email sent");
