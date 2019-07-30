@@ -8,7 +8,7 @@ class RoleController {
   constructor ($injector, $routeParams) {
     this.$injector = $injector
 
-    this.tabs = ['infos', 'users', 'manage']
+    this.tabs = ['infos', 'users', 'manage', 'logs']
     this.tab = $routeParams.tab
 
     this.itemsPerPage = 15
@@ -95,6 +95,26 @@ class RoleController {
       flash.create('success', unassociate ? this.i18n.userremoved : this.i18n.useradded)
     }, () => {
       flash.create('danger', 'FAIL')
+    })
+  }
+
+  loadLogs () {
+    let i18n = {}
+    let flash = this.$injector.get('Flash')
+
+    this.$injector.get('$q').all([
+      this.user.$promise,
+      this.$injector.get('translate')('analytics.errorload', i18n)
+    ]).then(() => {
+      this.logs = this.$injector.get('RoleLogs').query(
+        {
+          id: this.role.cn,
+          limit: 100000,
+          page: 0
+        },
+        () => { this.logs.reverse() },
+        flash.create.bind(flash, 'danger', i18n.errorload)
+      )
     })
   }
 }

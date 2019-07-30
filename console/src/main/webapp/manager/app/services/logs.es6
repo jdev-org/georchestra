@@ -17,3 +17,21 @@ angular.module('manager')
       }
     })
   ])
+  .factory('RoleLogs', ['$resource', 'CONSOLE_PRIVATE_PATH', ($resource, baseUri) =>
+    $resource(baseUri + 'admin_logs/:id/:limit/:page', {}, {
+      query: {
+        method: 'GET',
+        cache: true,
+        isArray: true
+      }
+    })
+  ])
+  .factory('OrgLogs', ['$resource', 'CONSOLE_PRIVATE_PATH', ($resource, baseUri) =>
+    $resource(baseUri + 'admin_logs/:id/:limit/:page', {}, {
+      query: {
+        method: 'GET',
+        cache: true,
+        isArray: true
+      }
+    })
+  ])

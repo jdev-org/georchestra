@@ -10,7 +10,7 @@ class OrgController {
   constructor ($injector, $routeParams) {
     this.$injector = $injector
 
-    this.tabs = ['infos', 'area', 'users', 'manage']
+    this.tabs = ['infos', 'area', 'users', 'manage', 'logs']
     this.tab = $routeParams.tab
 
     this.itemsPerPage = 15
@@ -91,6 +91,26 @@ class OrgController {
       $httpDefaultCache.removeAll()
       this.loadUsers()
       flash.create('success', unassociate ? this.i18n.userremoved : this.i18n.useradded)
+    })
+  }
+
+  loadLogs () {
+    let i18n = {}
+    let flash = this.$injector.get('Flash')
+
+    this.$injector.get('$q').all([
+      this.user.$promise,
+      this.$injector.get('translate')('analytics.errorload', i18n)
+    ]).then(() => {
+      this.logs = this.$injector.get('OrgLogs').query(
+        {
+          id: this.user.id,
+          limit: 100000,
+          page: 0
+        },
+        () => { this.logs.reverse() },
+        flash.create.bind(flash, 'danger', i18n.errorload)
+      )
     })
   }
 }
