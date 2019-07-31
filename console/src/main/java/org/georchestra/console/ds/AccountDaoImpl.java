@@ -43,9 +43,12 @@ import org.springframework.ldap.support.LdapNameBuilder;
 import org.springframework.security.authentication.encoding.LdapShaPasswordEncoder;
 
 import javax.naming.Name;
+import javax.naming.NamingException;
 import javax.naming.directory.SearchControls;
 import javax.naming.ldap.LdapName;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -197,12 +200,58 @@ public final class AccountDaoImpl implements AccountDao {
         mapToContext(account, context);
 
         ldapTemplate.modifyAttributes(context);
-
+        
         // Add log entry for this modification
         if(originLogin != null) {
-            AdminLogEntry log = new AdminLogEntry(originLogin, account.getUid(), AdminLogType.LDAP_ATTRIBUTE_CHANGE, new Date());
+            AdminLogEntry log = new AdminLogEntry(originLogin, account.getUid(), AdminLogType.LDAP_ATTRIBUTE_CHANGE, new Date(), getOldValues(context), getNewValues(context));
             this.logDao.save(log);
         }
+    }
+    
+    /**
+     * From context return original values before modification only for modified attributes
+     * @param context
+     * @return String
+     */
+    public String getOldValues(DirContextOperations context) {
+    	List<String> res = new ArrayList<String>();
+    	int len = context.getModificationItems().length;
+        if(len < 1) {
+        	return "";
+        }
+    	// get attributes names
+        for (int i = 0; i < len; i++) {
+        	String id = context.getModificationItems()[i].getAttribute().getID().toString(); 
+        	String oldVal = context.getAttributeSortedStringSet(id).toString();
+        	res.add(id + ": " + oldVal);
+		}
+    	return String.join(",", res);
+    }
+    
+    /**
+     * From context return new values only for modified attributes
+     * @param context
+     * @return String
+     */
+    public String getNewValues(DirContextOperations context) {
+        // get changed attributes
+        int len = context.getModificationItems().length;
+        if(len < 1) {
+        	return "";
+        }
+        List<String> attributesChanged = new ArrayList<String>();
+        for (int i = 0; i < len; i++) {
+        	try {
+        		String id = context.getModificationItems()[i].getAttribute().getID().toString();
+        		String value = context.getModificationItems()[i].getAttribute().get().toString();
+        		attributesChanged.add(id + ": " + value);
+			} catch (NamingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+        // Array to String        
+        return String.join(",", attributesChanged);
     }
 
     @Override
