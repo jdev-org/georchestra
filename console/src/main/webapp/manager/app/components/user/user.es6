@@ -244,11 +244,6 @@ class UserController {
     this.$injector.get('translate')('msg.sent', i18n)
     this.$injector.get('translate')('msg.error', i18n)
     let attachments = []
-    if (this.compose.template && this.compose.template.name) {
-      console.log(this.compose.template.name)
-    } else {
-      console.log('no template')
-    }
     for (let attachId in this.compose.attachments) {
       if (this.compose.attachments[attachId]) { attachments.push(attachId) }
     }
