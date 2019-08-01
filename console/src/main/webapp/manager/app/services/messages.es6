@@ -15,7 +15,8 @@ angular.module('manager')
           return $.param({
             subject: data.subject,
             content: data.content,
-            attachments: data.attachments
+            attachments: data.attachments,
+            template: data.template
           })
         }
       }

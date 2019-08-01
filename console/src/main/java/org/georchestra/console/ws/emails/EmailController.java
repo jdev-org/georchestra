@@ -99,6 +99,10 @@ public class EmailController {
 
     private static final Log LOG = LogFactory.getLog(EmailController.class.getName());
     private Collection<String> recipientWhiteList;
+    
+    public void setLogDao(AdminLogDao logRepo) {
+        this.logRepo = logRepo;
+    }
 
     /**
      * Email proxy configuration
@@ -178,6 +182,7 @@ public class EmailController {
     public String sendEmail(@PathVariable String recipient,
                             @RequestParam("subject") String subject,
                             @RequestParam("content") String content,
+                            @RequestParam("template") String templateName,
                             @RequestParam("attachments") String attachmentsIds,
                             HttpServletRequest request,
                             HttpServletResponse response)
@@ -206,8 +211,17 @@ public class EmailController {
         }
         email.setAttachments(attachments);
         this.send(email);
-
-        AdminLogEntry log = new AdminLogEntry(sender, recipient, AdminLogType.EMAIL_SENT, new Date());
+        
+        // prepare email informations to JSON
+        JSONObject mailAsJson = new JSONObject();
+        mailAsJson.put("template", templateName);
+        mailAsJson.put("subject", subject);
+        mailAsJson.put("content", content);
+        
+        // admin log
+        AdminLogEntry log = new AdminLogEntry(sender, recipient, AdminLogType.EMAIL_SENT, new Date(), "", mailAsJson.toString());
+        this.logRepo.save(log);
+        
         this.emailRepository.save(email);
         response.setContentType("application/json");
         return email.toJSON().toString();

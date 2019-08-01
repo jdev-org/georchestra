@@ -244,6 +244,11 @@ class UserController {
     this.$injector.get('translate')('msg.sent', i18n)
     this.$injector.get('translate')('msg.error', i18n)
     let attachments = []
+    if (this.compose.template && this.compose.template.name) {
+      console.log(this.compose.template.name)
+    } else {
+      console.log('no template')
+    }
     for (let attachId in this.compose.attachments) {
       if (this.compose.attachments[attachId]) { attachments.push(attachId) }
     }
@@ -251,7 +256,8 @@ class UserController {
       id: this.user.uid,
       subject: this.compose.subject,
       content: this.compose.content,
-      attachments: attachments.join(',')
+      attachments: attachments.join(','),
+      template: this.compose.template && this.compose.template.name ? this.compose.template.name : ''
     })).$save((r) => {
       delete this.compose
       flash.create('success', i18n.sent)
