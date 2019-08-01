@@ -29,6 +29,7 @@ import org.georchestra.console.dto.UserSchema;
 import org.georchestra.console.model.AdminLogEntry;
 import org.georchestra.console.model.AdminLogType;
 import org.georchestra.console.ws.newaccount.UidGenerator;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ldap.NameNotFoundException;
 import org.springframework.ldap.core.ContextMapper;
@@ -217,18 +218,24 @@ public final class AccountDaoImpl implements AccountDao {
      * @return String
      */
     public String getOldValues(DirContextOperations context) {
-    	List<String> res = new ArrayList<String>();
-    	int len = context.getModificationItems().length;
+        String oldValues = "";
+        int len = context.getModificationItems().length;
         if(len < 1) {
-        	return "";
+        	return oldValues;
         }
+        JSONObject oldJson = new JSONObject();        
     	// get attributes names
         for (int i = 0; i < len; i++) {
-        	String id = context.getModificationItems()[i].getAttribute().getID().toString(); 
-        	String oldVal = context.getAttributeSortedStringSet(id).toString();
-        	res.add(id + ": " + oldVal);
+            try {
+                String id = context.getModificationItems()[i].getAttribute().getID().toString();
+                oldJson.put(id, context.getAttributeSortedStringSet(id).toString());
+                oldValues = oldJson.toString();
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
 		}
-    	return String.join(",", res);
+    	return oldValues;
     }
     
     /**
@@ -238,23 +245,22 @@ public final class AccountDaoImpl implements AccountDao {
      */
     public String getNewValues(DirContextOperations context) {
         // get changed attributes
+        String newValues = "";
         int len = context.getModificationItems().length;
         if(len < 1) {
-        	return "";
+        	return newValues;
         }
-        List<String> attributesChanged = new ArrayList<String>();
+        JSONObject newJson = new JSONObject();
         for (int i = 0; i < len; i++) {
         	try {
         		String id = context.getModificationItems()[i].getAttribute().getID().toString();
-        		String value = context.getModificationItems()[i].getAttribute().get().toString();
-        		attributesChanged.add(id + ": " + value);
+                newJson.put(id, context.getModificationItems()[i].getAttribute().get().toString());
+                newValues = newJson.toString();
 			} catch (NamingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+                e.printStackTrace();
 			}
-		}
-        // Array to String        
-        return String.join(",", attributesChanged);
+        }
+        return newValues;
     }
 
     @Override
