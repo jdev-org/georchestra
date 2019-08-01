@@ -166,6 +166,9 @@ public final class AccountDaoImpl implements AccountDao {
 
             this.ldapTemplate.bind(dn, context, null);
 
+            // Add log entry for this modification
+            AdminLogEntry log = new AdminLogEntry(originLogin, account.getUid(), AdminLogType.ACCOUNT_MODERATION_ADD, new Date());
+            this.logDao.save(log);
         } catch (NameNotFoundException e) {
             throw new DataServiceException(e);
         }
@@ -275,6 +278,9 @@ public final class AccountDaoImpl implements AccountDao {
     @Override
     public synchronized void delete(Account account, final String originLogin) throws NameNotFoundException {
         this.ldapTemplate.unbind(buildUserDn(account), true);
+        // Add log entry for this modification
+        AdminLogEntry log = new AdminLogEntry(originLogin, account.getUid(), AdminLogType.ACCOUNT_MODERATION_DEL, new Date());
+        this.logDao.save(log);
     }
 
     @Override
