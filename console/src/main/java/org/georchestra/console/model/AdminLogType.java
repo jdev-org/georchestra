@@ -28,7 +28,7 @@ public enum AdminLogType {
     SYSTEM_ROLE_ADD("Sytem role added"),
     SYSTEM_ROLE_DEL("Sytem role deleted"),
     SYSTEM_ROLE_CHANGE("System role"),
-    OTHERROLE_ADD("Sytem role added"),
+    OTHER_ROLE_ADD("Sytem role added"),
     OTHER_ROLE_DEL("Sytem role deleted"),
     OTHER_ROLE_CHANGE("Other role"),
     LDAP_ATTRIBUTE_CHANGE("User attributes"),

@@ -130,8 +130,8 @@ public class RoleDaoImpl implements RoleDao {
 
 			// Add log entry for this modification
 			if(originLogin != null) {
-				AdminLogType logType = this.roles.isProtected(roleID) ? AdminLogType.SYSTEM_ROLE_CHANGE : AdminLogType.OTHER_ROLE_CHANGE;
-				AdminLogEntry log = new AdminLogEntry(originLogin, user.getUid(), logType, new Date());
+				AdminLogType logType = this.roles.isProtected(roleID) ? AdminLogType.SYSTEM_ROLE_ADD : AdminLogType.OTHER_ROLE_ADD;
+				AdminLogEntry log = new AdminLogEntry(originLogin, user.getUid(), logType, new Date(), "", roleID);
 				this.logDao.save(log);
 			}
 
@@ -167,13 +167,12 @@ public class RoleDaoImpl implements RoleDao {
 		if(originLogin != null) {
 			AdminLogType logType;
 			if(this.roles.isProtected(roleName)){
-				logType = AdminLogType.SYSTEM_ROLE_CHANGE;
+				logType = AdminLogType.SYSTEM_ROLE_DEL;
 			} else {
-				logType = AdminLogType.OTHER_ROLE_CHANGE;
+				logType = AdminLogType.OTHER_ROLE_DEL;
 			}
-			AdminLogEntry log = new AdminLogEntry(originLogin, account.getUid(), logType, new Date());
+			AdminLogEntry log = new AdminLogEntry(originLogin, account.getUid(), logType, new Date(), roleName, "");
 			this.logDao.save(log);
-
 		}
 	}
 
