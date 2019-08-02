@@ -45,8 +45,8 @@ public class AdminLogEntry {
     private String target;
     private AdminLogType type;
     private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-    private String old_value;
-    private String new_value;
+    private String old;
+    private String modification;
 
     @Column(updatable = false, nullable = false)
     @JsonIgnore
@@ -61,13 +61,13 @@ public class AdminLogEntry {
         this.date = date;
     }
     
-    public AdminLogEntry(String admin, String target, AdminLogType type, Date date, String oldValue, String newValue) {
+    public AdminLogEntry(String admin, String target, AdminLogType type, Date date, String old, String modification) {
         this.admin = admin;
         this.target = target;
         this.type = type;
         this.date = date;
-        this.old_value = oldValue;
-        this.new_value = newValue;
+        this.old = old;
+        this.modification = modification;
     }
 
     public long getId() {
@@ -115,19 +115,19 @@ public class AdminLogEntry {
         return AdminLogEntry.dateFormat.format(this.date);
     }
     
-    public String oldValue() {
-        return old_value;
+    public String getOld() {
+        return old;
     }
 
-    public void setOldValue(String oldValue) {
-        this.old_value = oldValue;
+    public void setOlde(String old) {
+        this.old = old;
     }
     
-    public String getNewValue() {
-        return new_value;
+    public String getModification() {
+        return modification;
     }
 
-    public void setNewValue(String newValue) {
-        this.new_value = newValue;
+    public void setModification(String modification) {
+        this.modification = modification;
     }
 }
