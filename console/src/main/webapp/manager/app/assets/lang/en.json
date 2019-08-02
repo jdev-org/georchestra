@@ -226,6 +226,8 @@
   "logs.alltype"          : "All",
   "logs.alltarget"        : "All",
   "logs.error"            : "Error while loading data",
+  "logs.old"              : "Original",
+  "logs.modification"     : "Change",
 
   "analytics.title"       : "Analytics",
   "analytics.all"         : "Everyone",

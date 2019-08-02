@@ -35,6 +35,8 @@
           </select>
           <span translate>logs.type</span>
         </th>
+        <th>Original</th>
+        <th>Modification</th>
       </tr>
     </thead>
     <tbody>
@@ -43,6 +45,8 @@
         <td><a ng-link="user({id: log.admin, tab: 'infos'})">{{::log.admin}}</a>
         <td><a ng-link="user({id: log.target, tab: 'infos'})">{{::log.target}}</a>
         <td>{{::log.type}}
+        <td>{{::log.old}}
+        <td>{{::log.modification}}
       </tr>
     </tbody>
   </table>

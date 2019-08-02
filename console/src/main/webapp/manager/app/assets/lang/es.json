@@ -225,6 +225,8 @@
   "logs.alltype"          : "Todos",
   "logs.alltarget"        : "Todos",
   "logs.error"            : "Error al cargar los logs",
+  "logs.old"              : "Ex",
+  "logs.modification"     : "Cambio",
 
   "analytics.title"       : "Estadísticas",
   "analytics.all"         : "Todo el mundo",

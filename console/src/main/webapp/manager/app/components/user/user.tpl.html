@@ -225,6 +225,8 @@
               <th translate>logs.date</th>
               <th translate>logs.sender</th>
               <th translate>logs.type</th>
+              <th translate>Oririnal</th>
+              <th translate>Modification</th>
             </tr>
           </thead>
           <tbody>
@@ -232,6 +234,8 @@
               <td>{{::log.date | logDate}}</td>
               <td>{{::log.admin}}</td>
               <td>{{::log.type}}</td>
+              <td>{{::log.old}}</td>
+              <td>{{::log.modification}}</td>
             </tr>
           </tbody>
         </table>
