@@ -228,7 +228,7 @@ public final class AccountDaoImpl implements AccountDao {
         for (int i = 0; i < len; i++) {
             try {
                 String id = context.getModificationItems()[i].getAttribute().getID().toString();
-                oldJson.put(id, context.getAttributeSortedStringSet(id).toString());
+                oldJson.put(id, context.getAttributeSortedStringSet(id).first().toString());
                 oldValues = oldJson.toString();
             }
             catch (Exception e) {
