@@ -215,18 +215,24 @@
 
       <div class="panel-body" ng-if="user.tab=='logs'">
         <ol class="breadcrumb">
-          <li class="active">
+          <li class="active" ng-if="!user.message">
             <span translate>logs.logs</span> <span class="badge">{{::user.logs.length}}</span>
           </li>
+          <li ng-if="user.message">
+            <a href="javascript:void(0);" ng-click="user.closeMessage()">
+              <span translate>logs.logs</span> <span class="badge">{{::user.logs.length}}</span>
+            </a>
+          </li>
+          <li class="active" ng-if="user.message">{{::user.message.subject}}</li>
         </ol>
-        <table class="table table-condensed">
+        <table class="table table-condensed" ng-if="!user.message">
           <thead>
             <tr>
               <th translate>logs.date</th>
               <th translate>logs.sender</th>
               <th translate>logs.type</th>
-              <th translate>Oririnal</th>
-              <th translate>Modification</th>
+              <th translate>logs.old</th>
+              <th translate>logs.modification</th>
             </tr>
           </thead>
           <tbody>
@@ -235,10 +241,34 @@
               <td>{{::log.admin}}</td>
               <td>{{::log.type}}</td>
               <td>{{::log.old}}</td>
-              <td>{{::log.modification}}</td>
+              <td ng-if="log.type == 'EMAIL_SENT'">
+                <a ng-click="user.openLogMessage(log.modification)" href="javascript:void(0);" translate>
+                  logs.mail                  
+                </a>
+              </td>
+              <td ng-if="log.type !== 'EMAIL_SENT'">{{::log.modification}}</td>
+              <td ng-if="log.type == 'EMAIL_SENT'">
             </tr>
           </tbody>
         </table>
+        <div ng-if="user.message">
+          <h4>
+            <small>
+              {{user.message.sender}}, <span translate>msg.on</span> {{user.message.date | date: 'mediumDate'}}
+            </small>
+          </h4>
+          <h4>
+            {{user.message.subject}}
+          </h4>
+          <p ng-bind-html="user.message.trusted"></p>
+          <hr ng-if="user.message.attachments.length>0" />
+          <h5 ng-if="user.message.attachments.length>0" translate>msg.attachments</h5>
+          <ul ng-if="user.message.attachments.length>0">
+            <li ng-repeat="attachment in user.message.attachments">
+              {{attachment.name}}
+            </li>
+          </ul>
+        </div>
         <dir-pagination-controls></dir-pagination-controls>
       </div>
 

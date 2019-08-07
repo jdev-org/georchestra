@@ -222,6 +222,11 @@ class UserController {
     })
   }
 
+  openLogMessage (message) {
+    // open message from logs
+    this.openMessage(JSON.parse(message))
+  }
+
   openMessage (message) {
     message.trusted = this.$injector.get('$sce').trustAsHtml(message.body)
     this.message = message
