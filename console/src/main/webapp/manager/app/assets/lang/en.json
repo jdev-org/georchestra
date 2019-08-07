@@ -228,6 +228,7 @@
   "logs.error"            : "Error while loading data",
   "logs.old"              : "Original",
   "logs.modification"     : "Change",
+  "logs.mail"             : "Read",
 
   "analytics.title"       : "Analytics",
   "analytics.all"         : "Everyone",

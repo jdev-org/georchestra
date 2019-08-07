@@ -227,6 +227,7 @@
   "logs.error"            : "Fehler beim Laden der Daten",
   "logs.old"              : "Früher",
   "logs.modification"     : "Veränderung",
+  "logs.mail"             : "Lesen",
 
   "analytics.title"       : "Statistiken",
   "analytics.all"         : "Alle",

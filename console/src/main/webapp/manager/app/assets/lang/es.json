@@ -227,6 +227,7 @@
   "logs.error"            : "Error al cargar los logs",
   "logs.old"              : "Ex",
   "logs.modification"     : "Cambio",
+  "logs.mail"             : "Consultar",
 
   "analytics.title"       : "Estadísticas",
   "analytics.all"         : "Todo el mundo",

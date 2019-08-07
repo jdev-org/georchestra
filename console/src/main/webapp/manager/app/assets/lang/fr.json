@@ -226,7 +226,9 @@
   "logs.alltarget"        : "Tous",
   "logs.error"            : "Erreur au chargement des logs",
   "logs.old"              : "Original",
-  "logs.modification"     : "Modifié",
+  "logs.modification"     : "Modification",
+  "logs.mail"             : "Ouvrir",
+  "logs.all"              : "Logs",
 
   "analytics.title"       : "Statistiques",
   "analytics.all"         : "Tout le monde",
