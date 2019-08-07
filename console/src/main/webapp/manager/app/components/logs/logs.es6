@@ -65,7 +65,6 @@ class LogsController {
   }
 
   openMessage (message) {
-    console.log(message)
     message = JSON.parse(message)
     message.trusted = this.$injector.get('$sce').trustAsHtml(message.body)
     this.message = message
