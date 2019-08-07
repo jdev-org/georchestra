@@ -32,7 +32,10 @@ public enum AdminLogType {
     OTHER_ROLE_DEL("Sytem role deleted"),
     OTHER_ROLE_CHANGE("Other role"),
     LDAP_ATTRIBUTE_CHANGE("User attributes"),
-    EMAIL_SENT("Email sent");
+    EMAIL_SENT("Email sent"),
+    ROLE_CREATE("Role added"),
+    ROLE_DELETE("Role removed");
+
 
     private String name;
 

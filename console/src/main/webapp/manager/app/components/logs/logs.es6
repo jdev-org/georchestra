@@ -1,9 +1,9 @@
 require('components/logs/logs.tpl')
 
 class LogsController {
-  static $inject = [ '$injector' ]
+  static $inject = [ '$injector', 'Role' ]
 
-  constructor ($injector) {
+  constructor ($injector, Role) {
     this.$injector = $injector
     this.itemsPerPage = 15
     let i18n = {}
@@ -30,6 +30,24 @@ class LogsController {
       start: this.$injector.get('date').getDefault(),
       end: this.$injector.get('date').getEnd()
     }
+
+    this.roles = Role.query()
+  }
+
+  filterRole (cn) {
+    return this.roles.filter(r => r.cn === cn)
+  }
+
+  displayRole (cn) {
+    let i18n = {}
+    if (!this.filterRole(cn).length) {
+      return
+    }
+    let $router = this.$injector.get('$router')
+    $router.navigate($router.generate('role', {
+      role: cn,
+      tab: 'infos'
+    }))
   }
 
   isFiltered () {
@@ -47,6 +65,7 @@ class LogsController {
   }
 
   openMessage (message) {
+    console.log(message)
     message = JSON.parse(message)
     message.trusted = this.$injector.get('$sce').trustAsHtml(message.body)
     this.message = message

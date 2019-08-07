@@ -50,10 +50,14 @@
       <tr dir-paginate="log in logs.logs | logs: logs.type:logs.admin:logs.target:logs.date | orderBy: '-date' | itemsPerPage: logs.itemsPerPage">
         <td>{{::log.date | logDate}}
         <td><a ng-link="user({id: log.admin, tab: 'infos'})">{{::log.admin}}</a>
-        <td><a ng-link="user({id: log.target, tab: 'infos'})">{{::log.target}}</a>
+        <td>
+          <a ng-link="user({id: log.target, tab: 'infos'})" ng-if="log.type !== 'ROLE_CREATE' && log.type !== 'ROLE_DELETE'">{{::log.target}}</a>
+          <a ng-click="logs.displayRole(log.target)" ng-if="logs.filterRole(log.target).length">{{::log.target}}</a>
+          <span ng-if="log.type === 'ROLE_DELETE'">{{::log.target}}</span>
+        </td>
         <td>{{::log.type}}
         <td>{{::log.old}}
-        <td ng-if="log.type == 'EMAIL_SENT'">
+        <td ng-if="log.type === 'EMAIL_SENT'">
           <a ng-click="logs.openMessage(log.modification)" href="javascript:void(0);" translate>
             logs.mail
           </a>

@@ -36,6 +36,9 @@ import org.georchestra.console.model.DelegationEntry;
 import org.georchestra.console.ws.backoffice.users.UserRule;
 import org.georchestra.console.ws.backoffice.utils.RequestUtil;
 import org.georchestra.console.ws.backoffice.utils.ResponseUtil;
+import org.georchestra.console.model.AdminLogEntry;
+import org.georchestra.console.model.AdminLogType;
+import org.georchestra.console.dao.AdminLogDao;
 import org.georchestra.lib.file.FileUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -66,6 +69,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.Date;
 
 /**
  * Web Services to maintain the Roles information.
@@ -95,6 +99,8 @@ public class RolesController {
 	public static final String VIRTUAL_TEMPORARY_ROLE_NAME = "TEMPORARY";
 	private static final String VIRTUAL_TEMPORARY_ROLE_DESCRIPTION = "Virtual role that contains all temporary users";
 
+	@Autowired
+	private AdminLogDao logDao;
 
 	@Autowired
 	private AccountDao accountDao;
@@ -226,12 +232,20 @@ public class RolesController {
 
 		try{
 			Role role = createRoleFromRequestBody(request.getInputStream());
+			String name = role.getName();
+
+			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+			String requestOriginator = auth.getName();
+			
 
 			this.roleDao.insert( role );
 			RoleResponse roleResponse = new RoleResponse(role, this.filter);
 			String jsonResponse = roleResponse.asJsonString();
-			ResponseUtil.buildResponse(response, jsonResponse, HttpServletResponse.SC_OK);
-
+			ResponseUtil.buildResponse(response, jsonResponse, HttpServletResponse.SC_OK);			
+			
+			// create log
+			AdminLogEntry log = new AdminLogEntry(requestOriginator, name, AdminLogType.ROLE_CREATE, new Date());
+			this.logDao.save(log);
 		} catch (DuplicatedCommonNameException emailex){
 
 			String jsonResponse = ResponseUtil.buildResponseMessage(Boolean.FALSE, DUPLICATED_COMMON_NAME);
@@ -269,6 +283,7 @@ public class RolesController {
 	public void delete(HttpServletResponse response, @PathVariable String cn)
 			throws IOException {
 		try {
+			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
 			// Check if this role is part of a delegation
 			for(DelegationEntry delegation: this.advancedDelegationDao.findByRole(cn)){
@@ -279,7 +294,10 @@ public class RolesController {
 			this.roleDao.delete(cn);
 
 			ResponseUtil.writeSuccess(response);
-
+			
+			// log modification
+			AdminLogEntry log = new AdminLogEntry(auth.getName(), cn, AdminLogType.ROLE_DELETE, new Date());
+			this.logDao.save(log);
 		} catch (NameNotFoundException e) {
 			LOG.error(e.getMessage());
 			ResponseUtil.buildResponse(response, buildErrorResponse(e.getMessage()),
