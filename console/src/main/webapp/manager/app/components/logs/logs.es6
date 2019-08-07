@@ -45,6 +45,16 @@ class LogsController {
     this.date.start = this.$injector.get('date').getDefault()
     this.date.end = this.$injector.get('date').getEnd()
   }
+
+  openMessage (message) {
+    message = JSON.parse(message)
+    message.trusted = this.$injector.get('$sce').trustAsHtml(message.body)
+    this.message = message
+  }
+
+  closeMessage () {
+    delete this.message
+  }
 }
 
 let filterLogs = () => {

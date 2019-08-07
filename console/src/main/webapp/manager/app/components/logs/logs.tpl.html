@@ -8,8 +8,15 @@
   <h4 translate>logs.title</h4>
 
   <hr>
-
-  <table class="table table-condensed">
+  <ol class="breadcrumb" ng-if="logs.message">    
+    <li class="active" ng-if="logs.message">
+      <a href="javascript:void(0);" ng-click="logs.closeMessage()">
+        <span translate>logs.all</span> <span class="badge">{{::logs.logs.length}}</span>
+      </a>
+    </li>
+    <li class="active">{{::logs.message.subject}}</li>
+  </ol>
+  <table class="table table-condensed" ng-if="!logs.message">
     <thead>
       <tr>
         <th class="header-filter">
@@ -46,11 +53,34 @@
         <td><a ng-link="user({id: log.target, tab: 'infos'})">{{::log.target}}</a>
         <td>{{::log.type}}
         <td>{{::log.old}}
-        <td>{{::log.modification}}
+        <td ng-if="log.type == 'EMAIL_SENT'">
+          <a ng-click="logs.openMessage(log.modification)" href="javascript:void(0);" translate>
+            logs.mail
+          </a>
+        </td>
+        <td ng-if="log.type !== 'EMAIL_SENT'">{{::log.modification}}</td>
       </tr>
     </tbody>
   </table>
+  <div ng-if="logs.message">
+    <h4>
+      <small>
+        {{logs.message.sender}}, <span translate>msg.on</span> {{logs.message.date | date: 'mediumDate'}}
+      </small>
+    </h4>
+    <h4>
+      {{logs.message.subject}}
+    </h4>
+    <p ng-bind-html="logs.message.trusted"></p>
+    <hr ng-if="logs.message.attachments.length>0" />
+    <h5 ng-if="logs.message.attachments.length>0" translate>msg.attachments</h5>
+    <ul ng-if="logs.message.attachments.length>0">
+      <li ng-repeat="attachment in logs.message.attachments">
+        {{attachment.name}}
+      </li>
+    </ul>
+  </div>
 
-  <dir-pagination-controls></dir-pagination-controls>
+  <dir-pagination-controls ng-if="!logs.message"></dir-pagination-controls>
 
 </section>
