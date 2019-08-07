@@ -211,20 +211,17 @@ public class EmailController {
         }
         email.setAttachments(attachments);
         this.send(email);
-        
-        // prepare email informations to JSON
-        JSONObject mailAsJson = new JSONObject();
-        mailAsJson.put("template", templateName);
-        mailAsJson.put("subject", subject);
-        mailAsJson.put("content", content);
-        
-        // admin log
-        AdminLogEntry log = new AdminLogEntry(sender, recipient, AdminLogType.EMAIL_SENT, new Date(), "", mailAsJson.toString());
-        this.logRepo.save(log);
-        
+              
         this.emailRepository.save(email);
         response.setContentType("application/json");
-        return email.toJSON().toString();
+        
+        String jsonEmail = email.toJSON().toString();
+        
+        // admin log
+        AdminLogEntry log = new AdminLogEntry(sender, recipient, AdminLogType.EMAIL_SENT, new Date(), "", jsonEmail);
+        this.logRepo.save(log);
+
+        return jsonEmail;
 
     }
 
