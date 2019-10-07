@@ -41,4 +41,15 @@ angular.module('manager')
         isArray: true
       }
     })
+  ]).factory('ExportOrgsCSV', ['$http', 'CONSOLE_PRIVATE_PATH', ($http, baseUri) => {
+    return orgs => {
+      return $http.post(baseUri + 'export/orgs.csv', orgs, {
+        cache: false,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'text/csv'
+        }
+      })
+    }
+  }
   ])

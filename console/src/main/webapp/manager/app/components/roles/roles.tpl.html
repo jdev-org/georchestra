@@ -27,6 +27,18 @@
 
       <thead>
         <tr>
+          <th>
+            <div class="btn-group users-selection">
+              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                <i class="glyphicon glyphicon-save"></i>
+                <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu">
+                <li><a href="javascript:void(0)" ng-click="roles.exportCSV()" ng-show="roles.selection.length !== 0" translate>sel.export_csv</a></li>
+                <li><a href="javascript:void(0)" ng-click="roles.exportVCF()" ng-show="roles.selection.length !== 0" translate>sel.export_vcard</a></li>
+              </ul>
+            </div>
+          </th>
           <th translate>role.cn</th>
           <th translate>role.membersCount</th>
         </tr>

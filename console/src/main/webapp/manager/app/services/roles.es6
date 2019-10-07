@@ -35,4 +35,26 @@ angular.module('manager')
     return () => adminRoles
   }]).factory('roleAdminFilter', [ 'roleAdminList', (roleAdminList) =>
     (role) => roleAdminList().indexOf(role.cn) >= 0
+  ]).factory('ExportVCF', ['$http', 'CONSOLE_PRIVATE_PATH', ($http, baseUri) => {
+    return roles => {
+      return $http.post(baseUri + 'export/roles.vcf', roles, {
+        cache: false,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'text/x-vcard'
+        }
+      })
+    }
+  }
+  ]).factory('ExportRolesCSV', ['$http', 'CONSOLE_PRIVATE_PATH', ($http, baseUri) => {
+    return roles => {
+      return $http.post(baseUri + 'export/roles.csv', roles, {
+        cache: false,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'text/csv'
+        }
+      })
+    }
+  }
   ])

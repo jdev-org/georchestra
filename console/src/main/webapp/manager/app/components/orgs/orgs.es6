@@ -42,6 +42,44 @@ class OrgsController {
     translate('org.deleteError', this.i18n)
   }
 
+  export_ (fileType) {
+    const download = this.$injector.get(`ExportOrgs${fileType.toUpperCase()}`)
+    const filter = this.$injector.get('$filter')
+    download(filter('filter')(this.orgs, this.q).map(o => o.id)).then(result => {
+      if (result.status !== 200) {
+        throw new Error(`Cannot fetch orgs list. error ${result.status}`)
+      }
+      let mimetype = ''
+      switch (fileType) {
+        case 'vcf':
+          mimetype = 'text/x-vcard'
+          break
+        default:
+          mimetype = `text/${fileType};charset=utf-8`
+      }
+      const blob = new Blob(['\ufeff', result.data], { type: mimetype })
+      const a = document.createElement('a')
+      a.href = window.URL.createObjectURL(blob)
+      a.target = '_blank'
+      const date = filter('date')(new Date(), 'yyyyMMdd-HHmmss')
+      a.download = `${date}_orgs_export.${fileType}`
+      document.body.appendChild(a) // create the link "a"
+      a.click() // click the link "a"
+      document.body.removeChild(a)
+    }).catch(err => {
+      let flash = this.$injector.get('Flash')
+      flash.create('danger', err)
+    })
+  }
+
+  exportCSV () {
+    this.export_('csv')
+  }
+
+  exportVCF () {
+    this.export_('vcf')
+  }
+
   create () {
     const Org = this.$injector.get('Orgs')
     this.newInstance = new Org({})

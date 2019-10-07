@@ -33,6 +33,44 @@ class RolesController {
     translate('role.deleteError', this.i18n)
   }
 
+  export_ (fileType) {
+    const download = this.$injector.get(`Export${fileType.toUpperCase()}`)
+    const filter = this.$injector.get('$filter')
+    download(filter('filter')(this.roles, this.q).map(r => r.cn)).then(result => {
+      if (result.status !== 200) {
+        throw new Error(`Cannot fetch roles list. error ${result.status}`)
+      }
+      let mimetype = ''
+      switch (fileType) {
+        case 'vcf':
+          mimetype = 'text/x-vcard'
+          break
+        default:
+          mimetype = `text/${fileType};charset=utf-8`
+      }
+      const blob = new Blob(['\ufeff', result.data], { type: mimetype })
+      const a = document.createElement('a')
+      a.href = window.URL.createObjectURL(blob)
+      a.target = '_blank'
+      const date = filter('date')(new Date(), 'yyyyMMdd-HHmmss')
+      a.download = `${date}_roles_export.${fileType}`
+      document.body.appendChild(a) // create the link "a"
+      a.click() // click the link "a"
+      document.body.removeChild(a)
+    }).catch(err => {
+      let flash = this.$injector.get('Flash')
+      flash.create('danger', err)
+    })
+  }
+
+  exportCSV () {
+    this.export_('csv')
+  }
+
+  exportVCF () {
+    this.export_('vcf')
+  }
+
   create () {
     const Role = this.$injector.get('Role')
     this.newInstance = new Role({})
