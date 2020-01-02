@@ -13,10 +13,18 @@ class LoggerController {
     this.$injector.get('translate')('logs.error', i18n)
     this.$injector.get('translate')('logs.alltarget', i18n)
     let initialize = this.initialize.bind(this)
-    this.logs = this.$injector.get('Logs').query({
+    // manage query params to get user's or complete logs
+    let typeQuery = 'Logs'
+    let params = {
       limit: 100000,
       page: 0
-    }, () => {
+    }
+    if(this.user) {
+      params.id = thi.user
+      typeQuery = 'UserLogs'
+    }
+
+    this.logs = this.$injector.get(typeQuery).query(params, () => {
       // transform each logs changed value into json to find info during html construction
       this.logs.map(l => {
         l.changed = l.changed && l.changed.length ? JSON.parse(l.changed) : l.changed
@@ -167,7 +175,8 @@ const logDateFilter = () => date => moment(date).format('YYYY-MM-DD HH:mm')
 angular.module('manager')
   .component('logger', {
     bindings: {
-      filter: '='
+      filter: '=',
+      title: '='
     },
     controller: LoggerController,
     controllerAs: 'logger',
