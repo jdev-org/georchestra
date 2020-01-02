@@ -3,7 +3,7 @@
     <i class="glyphicon glyphicon-repeat"></i>
     Reset filters
     </button>
-    <h4 translate>logs.title</h4>
+    <h4 ng-if="logger.title" translate>logs.title</h4>
 
     <hr>
     <ol class="breadcrumb" ng-if="logger.log">    
@@ -16,41 +16,41 @@
     <li class="active" ng-if="!logger.log.trusted">{{::logger.log.type}}</li>
     </ol>
     <table class="table table-condensed" ng-if="!logger.log">
-    <thead ng-if="logger.filter">
-        <tr>
-        <th class="header-filter">
-            <date model="logger.date"></date>
-        </th>
-        <th class="header-filter">
-            <select class="pull-right form-control input-sm" ng-model="logger.admin" chosen>
-            <option value="" translate>logs.allsender</option>
-            <option ng-repeat="sender in logger.senders" value="{{::sender}}">{{::sender}}</option>
-            </select>
-            <span translate>logs.sender</span>
-        </th>
-        <th class="header-filter">
-            <select class="pull-right form-control input-sm" ng-model="logger.target"
-            ng-options="t.key as t.value for t in logger.targets" chosen>
-            </select>
-            <span translate>logs.target</span>
-        </th>
-        <th class="header-filter">
-            <select class="pull-right form-control input-sm" ng-model="logger.type" chosen>
-            <option value="" translate>logs.alltype</option>
-            <option ng-repeat="type in logger.types" value="{{::type}}">{{::type}}</option>
-            </select>
-            <span translate>logs.type</span>
-        </th>
-        </tr>
-    </thead>
-    <thead ng-if="!logger.filter">
-        <tr>
-            <th translate>logs.date</th>
-            <th translate>logs.sender</th>
-            <th translate>logs.target</th>
-            <th translate>logs.type</th>
-        </tr>
-    </thead>
+        <thead ng-if="logger.filter">
+            <tr>
+            <th class="header-filter">
+                <date model="logger.date"></date>
+            </th>
+            <th class="header-filter">
+                <select class="pull-right form-control input-sm" ng-model="logger.admin" chosen>
+                <option value="" translate>logs.allsender</option>
+                <option ng-repeat="sender in logger.senders" value="{{::sender}}">{{::sender}}</option>
+                </select>
+                <span translate>logs.sender</span>
+            </th>
+            <th class="header-filter">
+                <select class="pull-right form-control input-sm" ng-model="logger.target"
+                ng-options="t.key as t.value for t in logger.targets" chosen>
+                </select>
+                <span translate>logs.target</span>
+            </th>
+            <th class="header-filter">
+                <select class="pull-right form-control input-sm" ng-model="logger.type" chosen>
+                <option value="" translate>logs.alltype</option>
+                <option ng-repeat="type in logger.types" value="{{::type}}">{{::type}}</option>
+                </select>
+                <span translate>logs.type</span>
+            </th>
+            </tr>
+        </thead>
+        <thead ng-if="!logger.filter">
+            <tr>
+                <th translate>logs.date</th>
+                <th translate>logs.sender</th>
+                <th translate>logs.target</th>
+                <th translate>logs.type</th>
+            </tr>
+        </thead>
     <tbody>
         <tr dir-paginate="log in logger.logs | logs: logger.type:logger.admin:logger.target:logger.date | orderBy: '-date' | itemsPerPage: logger.itemsPerPage">
             <td>{{::log.date | logDate}}
