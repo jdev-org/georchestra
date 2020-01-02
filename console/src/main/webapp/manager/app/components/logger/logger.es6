@@ -1,16 +1,19 @@
-require('components/logs/logs.tpl')
+require('components/logger/logger.tpl')
 
-class LogsController {
-  static $inject = ['$injector']
-
-  constructor ($injector) {
+class LoggerController {
+  static $inject = [ '$element', '$scope', '$injector' ]
+  constructor ($element, $scope, $injector) {
     this.$injector = $injector
+    this.$element = $element
+    this.$scope = $scope
+  }
+  $onInit () {
     this.itemsPerPage = 15
-    const i18n = {}
+    let i18n = {}
     this.$injector.get('translate')('logs.error', i18n)
     this.$injector.get('translate')('logs.alltarget', i18n)
-
-    this.logs = $injector.get('Logs').query({
+    let initialize = this.initialize.bind(this)
+    this.logs = this.$injector.get('Logs').query({
       limit: 100000,
       page: 0
     }, () => {
@@ -21,11 +24,11 @@ class LogsController {
       let extract = (key) => [ ...new Set(this.logs.map(l => l[key])) ]
       this.senders = extract('admin')
       this.types = extract('type')
-      this.targets = [{ key: 'all', value: i18n.alltarget }].concat(
+      this.targets = [ { key: 'all', value: i18n.alltarget } ].concat(
         extract('target').map(g => ({ key: g, value: g }))
       )
     }, () => {
-      $injector.get('Flash').create('danger', i18n.error)
+      this.$injector.get('Flash').create('danger', i18n.error)
     })
 
     this.target = 'all'
@@ -37,7 +40,7 @@ class LogsController {
 
     // get all orgs infos and orgs name
     this.orgsId = {}
-    $injector.get('Orgs').query(orgs => {
+    this.$injector.get('Orgs').query(orgs => {
       orgs.map(org => {
         this.orgsId[org.id] = org.name
       })
@@ -46,21 +49,24 @@ class LogsController {
 
     // get all role
     this.roles = []
-    $injector.get('Role').query(roles => {
+    this.$injector.get('Role').query(roles => {
       this.roles = roles.map(role => role.cn)
     })
 
     // get all users
     this.users = []
-    $injector.get('User').query(users => {
+    this.$injector.get('User').query(users => {
       this.users = users.map(user => user.uid)
     })
+    initialize()
   }
-
+  initialize () {
+    console.log(this.logs)
+  }
   // get log info and return log target type or empty string
   getType (log) {
     let type = ''
-    if (this.roles && this.orgsId && this.users && this.orgs) {
+    if (log && this.roles && this.orgsId && this.users && this.orgs) {
       if (log.type.indexOf('DELETED') > -1 || log.type.indexOf('REFUSED') > -1) {
         // avoid to create link for removed items
         return type
@@ -85,7 +91,7 @@ class LogsController {
     // remove old log if not already deleted
     if (this.log) { delete this.log }
     // get messages for this user
-    if (log.changed) {
+    if (log && log.changed) {
       // transform string to json if not already done
       log.changed = log.changed && log.changed.length ? JSON.parse(log.changed) : log.changed
       if (log.changed.sender) {
@@ -93,6 +99,26 @@ class LogsController {
         log.trusted = this.$injector.get('$sce').trustAsHtml(log.changed.body)
       }
       this.log = log
+    }
+  }
+
+  getDescription (log) {
+    if (log && this.log.changed) {
+      if (log.changed.sender) {
+        // only for mail
+        return 'message'
+      } else if (log.changed.field === 'cities') {
+        return 'changeArea'
+      } else if (log.changed.new && log.changed.old) {
+        // old value changed for another
+        return 'updateValue'
+      } else if (log.changed.new && !log.changed.old) {
+        // nothing to compare it's a new value
+        return 'initValue'
+      } else if (!log.changed.new && log.changed.old) {
+        // replace value by nothing
+        return 'clearValue'
+      }
     }
   }
 
@@ -110,7 +136,7 @@ class LogsController {
   }
 }
 
-const filterLogs = () => {
+let filterLogs = () => {
   return (logs, type, admin, target, date) => {
     if (!logs) { return }
     let filtered = logs.filter(log => {
@@ -138,8 +164,14 @@ const filterLogs = () => {
 
 const logDateFilter = () => date => moment(date).format('YYYY-MM-DD HH:mm')
 
-angular
-  .module('manager')
-  .controller('LogsController', LogsController)
+angular.module('manager')
+  .component('logger', {
+    bindings: {
+      filter: '='
+    },
+    controller: LoggerController,
+    controllerAs: 'logger',
+    templateUrl: 'components/logger/logger.tpl.html'
+  })
   .filter('logs', filterLogs)
   .filter('logDate', logDateFilter)
