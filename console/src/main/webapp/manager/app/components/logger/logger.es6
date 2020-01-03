@@ -19,8 +19,8 @@ class LoggerController {
       limit: 100000,
       page: 0
     }
-    if(this.user) {
-      params.id = thi.user
+    if (this.user) {
+      params.id = this.user
       typeQuery = 'UserLogs'
     }
 
@@ -176,7 +176,8 @@ angular.module('manager')
   .component('logger', {
     bindings: {
       filter: '=',
-      title: '='
+      title: '=',
+      user: '='
     },
     controller: LoggerController,
     controllerAs: 'logger',

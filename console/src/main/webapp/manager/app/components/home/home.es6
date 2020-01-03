@@ -4,7 +4,6 @@ class HomeController {
   static $inject = [ '$injector' ]
 
   constructor ($injector) {
-    const LOG_LIMIT = 15
     const EXPIRED = 'TEMPORARY'
 
     this.$injector = $injector
