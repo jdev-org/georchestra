@@ -4,8 +4,12 @@ class HomeController {
   static $inject = ['$injector']
 
   constructor ($injector) {
+<<<<<<< HEAD
     const LOG_LIMIT = 15
     const EXPIRED_ROLE = $injector.get('expiredRole')
+=======
+    const EXPIRED = 'TEMPORARY'
+>>>>>>> Pass user to logger component in order to get user's logs
 
     this.$injector = $injector
 

@@ -21,6 +21,7 @@ class UserController {
 
     this.tabs = ['infos', 'roles', 'analytics', 'messages', 'logs', 'manage']
     this.tab = $routeParams.tab
+    this.uid = $routeParams.id
 
     this.user = User.get({ id: $routeParams.id }, (user) => {
       user.originalID = user.uid
@@ -184,33 +185,6 @@ class UserController {
       this.extractionOptions = { ...extractionOptions }
       delete this.extractionOptions.limit
       this.extractionOptions.service = 'layersExtraction.csv'
-    })
-  }
-
-  loadLogs ($scope) {
-    const i18n = {}
-    const flash = this.$injector.get('Flash')
-
-    this.$injector.get('$q').all([
-      this.user.$promise,
-      this.$injector.get('translate')('analytics.errorload', i18n)
-    ]).then(() => {
-      this.logs = this.$injector.get('UserLogs').query(
-        {
-          id: this.user.uid,
-          limit: 100000,
-          page: 0
-        },
-        () => {
-          this.logs.reverse()
-          this.logs.map(log => {
-            if (log.changed) {
-              log.changed = JSON.parse(log.changed)
-            }
-          })
-        },
-        flash.create.bind(flash, 'danger', i18n.errorload)
-      )
     })
   }
 
@@ -390,9 +364,6 @@ class UserController {
 
     if (this.tab === 'analytics') {
       this.loadAnalytics($scope)
-    }
-    if (this.tab === 'logs') {
-      this.loadLogs($scope)
     }
   }
 
