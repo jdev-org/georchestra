@@ -63,8 +63,13 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 @Controller
 public class OrgsController {
+	
+	private static final Log LOG = LogFactory.getLog(LogUtils.class.getName());
 
     private static final String BASE_MAPPING = "/private";
     private static final String BASE_RESOURCE = "orgs";
@@ -211,14 +216,19 @@ public class OrgsController {
         // Retrieve current orgs state from ldap
         Org org = this.orgDao.findByCommonName(commonName);
         OrgExt orgExt = this.orgDao.findExtById(commonName);
+        Org initialOrg = null;
+        OrgExt initialOrgExt = null;
 
         // get default pending status
         Boolean defaultPending = org.isPending();
 
         // Update org and orgExt fields
-        if (org.getName() != null && logUtils != null) {
-            logUtils.logOrgChanged(org, json);
-            logUtils.logOrgExtChanged(orgExt, json);
+        try {
+            initialOrg = org.clone();
+            initialOrgExt = orgExt.clone();
+        } catch (CloneNotSupportedException e) {
+        	LOG.info("Log action will fail. Clone org or orgExt is not supported.");
+            e.printStackTrace();
         }
         this.updateFromRequest(org, json);
         orgExt.setId(org.getId());
@@ -236,6 +246,14 @@ public class OrgsController {
 
         this.orgDao.update(orgExt);
         org.setOrgExt(orgExt);
+
+        // log org and orgExt changes
+        if (initialOrg != null) {
+            logUtils.logOrgChanged(initialOrg, json);
+        }
+        if (initialOrgExt != null) {
+            logUtils.logOrgExtChanged(initialOrgExt, json);
+        }
 
         // log if pending status change
         if (request.getHeader("sec-username") != null && defaultPending != org.isPending() && logUtils != null) {
