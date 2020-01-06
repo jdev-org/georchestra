@@ -436,7 +436,7 @@ public class UsersController {
         }
 
         accountDao.update(originalAcount, modifiedAccount, auth.getName());
-        // log modifications
+        // log update modifications
         if (logUtils != null) {
         	logUtils.logChanges(modifiedAccount, originalAcount);
         }
@@ -583,8 +583,6 @@ public class UsersController {
             throw new IOException(e);
         }
     }
-
-
 
     /**
      * Modify only the account's fields that are present in the request body.
