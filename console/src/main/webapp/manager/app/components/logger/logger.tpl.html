@@ -3,8 +3,7 @@
     <i class="glyphicon glyphicon-repeat"></i>
     Reset filters
     </button>
-    <h4 ng-if="logger.title" translate>logs.title</h4>
-
+    <h4 ng-if="logger.getTitle()" translate>logs.title</h4>
     <hr>
     <ol class="breadcrumb" ng-if="logger.log">    
     <li class="active" ng-if="logger.log">
