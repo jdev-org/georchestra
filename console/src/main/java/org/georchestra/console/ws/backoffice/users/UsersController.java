@@ -132,16 +132,6 @@ public class UsersController {
     @Autowired
     private EmailFactory emailFactory;
 
-    private String accountUid;
-
-    private void setAccountUid(String accountUid) {
-        this.accountUid = accountUid;
-    }
-
-    private String getAccountUid() {
-        return this.accountUid;
-    }
-
     public void setEmailFactory(EmailFactory emailFactory) {
         this.emailFactory = emailFactory;
     }
@@ -435,11 +425,7 @@ public class UsersController {
         // searches the account
         Account originalAcount = this.accountDao.findByUID(uid);
         Account modifiedAccount = modifyAccount(AccountFactory.create(originalAcount), request.getInputStream());
-        // log modifications
-        this.setAccountUid(uid);
-        if (logUtils != null) {
-            this.logChanges(modifiedAccount, originalAcount);
-        }
+        boolean isPendingValidation = originalAcount.isPending() && !modifiedAccount.isPending() ? true : false;
 
         if (!modifiedAccount.getOrg().equals(originalAcount.getOrg())) {
             if (!auth.getAuthorities().contains(ROLE_SUPERUSER))
@@ -450,6 +436,10 @@ public class UsersController {
         }
 
         accountDao.update(originalAcount, modifiedAccount, auth.getName());
+        // log modifications
+        if (logUtils != null) {
+            this.logChanges(modifiedAccount, originalAcount);
+        }
 
         if (!modifiedAccount.getOrg().equals(originalAcount.getOrg())) {
             if (!auth.getAuthorities().contains(ROLE_SUPERUSER))
@@ -461,16 +451,17 @@ public class UsersController {
 
         if (accountDao.hasUserDnChanged(originalAcount, modifiedAccount)) {
             // account was validated by a moderator, notify user
-            if (originalAcount.isPending() && !modifiedAccount.isPending()) {
-                // log pending user validation
-                if (logUtils != null) {
-                    logUtils.createLog(modifiedAccount.getUid(), AdminLogType.PENDING_USER_ACCEPTED, null);
-                }
+            if (isPendingValidation) {
                 // send validation email to user
                 this.emailFactory.sendAccountWasCreatedEmail(request.getSession().getServletContext(),
                         modifiedAccount.getEmail(), modifiedAccount.getCommonName(), modifiedAccount.getUid());
             }
             roleDao.modifyUser(originalAcount, modifiedAccount);
+            
+            // log pending user validation
+            if (isPendingValidation) {
+                logUtils.createLog(modifiedAccount.getUid(), AdminLogType.PENDING_USER_ACCEPTED, null);
+            }   
         }
 
         if (accountDao.hasUserLoginChanged(originalAcount, modifiedAccount)) {
@@ -485,6 +476,9 @@ public class UsersController {
             this.emailFactory.sendAccountUidRenamedEmail(request.getSession().getServletContext(),
                     modifiedAccount.getEmail(), modifiedAccount.getCommonName(), modifiedAccount.getUid());
         }
+        
+        // log modification
+        
         return modifiedAccount;
     }
 
@@ -600,7 +594,7 @@ public class UsersController {
      * @param original Account before change
      */
     private void logChanges(Account modified, Account original) {
-        String target = this.getAccountUid();
+        String target = modified.getUid();
         final AdminLogType type = AdminLogType.USER_ATTRIBUTE_CHANGED;
 
         if (modified.getDescription() != null && !modified.getDescription().equals(original.getDescription())) {
