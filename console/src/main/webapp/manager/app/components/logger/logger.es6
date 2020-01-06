@@ -12,7 +12,6 @@ class LoggerController {
     let i18n = {}
     this.$injector.get('translate')('logs.error', i18n)
     this.$injector.get('translate')('logs.alltarget', i18n)
-    let initialize = this.initialize.bind(this)
     // manage query params to get user's or complete logs
     let typeQuery = 'Logs'
     let params = {
@@ -66,11 +65,15 @@ class LoggerController {
     this.$injector.get('User').query(users => {
       this.users = users.map(user => user.uid)
     })
-    initialize()
   }
-  initialize () {
-    console.log(this.logs)
+
+  getTitle () {
+    if (this.title === undefined) {
+      this.title = true
+    }
+    return this.title
   }
+
   // get log info and return log target type or empty string
   getType (log) {
     let type = ''
