@@ -217,8 +217,8 @@ public class OrgsController {
 
         // Update org and orgExt fields
         if (org.getName() != null && logUtils != null) {
-            this.logOrgChanged(org, json);
-            this.logOrgExtChanged(orgExt, json);
+            logUtils.logOrgChanged(org, json);
+            logUtils.logOrgExtChanged(orgExt, json);
         }
         this.updateFromRequest(org, json);
         orgExt.setId(org.getId());
@@ -449,92 +449,6 @@ public class OrgsController {
             DelegationEntry delegation = this.delegationDao.findOne(auth.getName());
             if (!Arrays.asList(delegation.getOrgs()).contains(org))
                 throw new AccessDeniedException("Org not under delegation");
-        }
-    }
-
-    /**
-     * Log org update found in json object.
-     * 
-     * @param org  Org instance to update
-     * @param json Json document to take information from
-     * @throws JSONException If something went wrong during information extraction
-     *                       from json document
-     */
-    protected void logOrgChanged(Org org, JSONObject json) throws IOException {
-        final int MAX_CITIES = 32;
-        String id = json.optString(Org.JSON_ID);
-        // log name changed
-        if (!org.getName().equals(json.optString(Org.JSON_NAME))) {
-            logUtils.createAndLogDetails(id, Org.JSON_NAME, org.getName(), json.optString(Org.JSON_NAME),
-                    AdminLogType.ORG_ATTRIBUTE_CHANGED);
-        }
-        // log short name changed
-        if (!org.getShortName().equals(json.optString(Org.JSON_SHORT_NAME))) {
-            logUtils.createAndLogDetails(json.optString(Org.JSON_SHORT_NAME), Org.JSON_SHORT_NAME, org.getShortName(),
-                    json.optString(Org.JSON_ID), AdminLogType.ORG_ATTRIBUTE_CHANGED);
-        }
-
-        // get area differences between old and new list
-        // Make sure Cities exist
-        int rmLen = 0;
-        int addLen = 0;
-        List<String> removed = new ArrayList<>();
-        List<Object> added = new ArrayList<>();
-
-        if (org.getCities() != null && json.optJSONArray(Org.JSON_CITIES) != null) {
-            removed = org.getCities().stream().filter(p -> !json.optJSONArray(Org.JSON_CITIES).toList().contains(p))
-                    .collect(Collectors.toList());
-            rmLen = removed.size();
-            added = json.optJSONArray(Org.JSON_CITIES).toList().stream().filter(p -> !org.getCities().contains(p))
-                    .collect(Collectors.toList());
-            addLen = added.size();
-        }
-
-        // create log
-        if (rmLen > 0 || addLen > 0) {
-            String oldCities = rmLen > 0 && rmLen < MAX_CITIES ? removed.toString() : "";
-            String newCities = addLen > 0 && addLen < MAX_CITIES ? added.toString() : "";
-            JSONObject details = logUtils.getLogDetails(Org.JSON_CITIES, oldCities, newCities,
-                    AdminLogType.ORG_ATTRIBUTE_CHANGED);
-            details.put("added", addLen);
-            details.put("removed", rmLen);
-            logUtils.createLog(id, AdminLogType.ORG_ATTRIBUTE_CHANGED, details.toString());
-        }
-    }
-
-    /**
-     * Log update orgExt from json object.
-     *
-     * @param orgExt OrgExt instance to update
-     * @param json   Json document to take information from
-     * @throws JSONException If something went wrong during information extraction
-     *                       from json document
-     */
-    protected void logOrgExtChanged(OrgExt orgExt, JSONObject json) {
-        String orgId = orgExt.getId();
-        AdminLogType type = AdminLogType.ORG_ATTRIBUTE_CHANGED;
-        // log orgType changed
-        if (!orgExt.getOrgType().equals(json.optString(OrgExt.JSON_ORG_TYPE))) {
-            logUtils.createAndLogDetails(orgId, OrgExt.JSON_ORG_TYPE, orgExt.getOrgType(),
-                    json.optString(OrgExt.JSON_ORG_TYPE), type);
-        }
-
-        if (!orgExt.getAddress().equals(json.optString(OrgExt.JSON_ADDRESS))) {
-            logUtils.createAndLogDetails(orgId, OrgExt.JSON_ADDRESS, orgExt.getAddress(),
-                    json.optString(OrgExt.JSON_ADDRESS), type);
-        }
-        // log description changed
-        if (!orgExt.getDescription().equals(json.optString(Org.JSON_DESCRIPTION))) {
-            logUtils.createAndLogDetails(orgId, Org.JSON_DESCRIPTION, orgExt.getDescription(),
-                    json.optString(Org.JSON_DESCRIPTION), type);
-        }
-        // log web site url changed
-        if (!orgExt.getUrl().equals(json.optString(Org.JSON_URL))) {
-            logUtils.createAndLogDetails(orgId, Org.JSON_URL, orgExt.getUrl(), json.optString(Org.JSON_URL), type);
-        }
-        // log logo changed
-        if (!orgExt.getLogo().equals(json.get("logo"))) {
-            logUtils.createAndLogDetails(orgId, Org.JSON_LOGO, null, null, type);
         }
     }
 
