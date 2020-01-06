@@ -179,7 +179,7 @@ public class PasswordRecoveryFormController {
 
             // log role deleted
             if (account.getUid() != null && logUtils != null) {
-                logUtils.createLog(account.getUid(), AdminLogType.EMAIL_RECOVERY_SENT, "");
+                logUtils.createLog(account.getUid(), AdminLogType.EMAIL_RECOVERY_SENT, null);
             }
 
             return "emailWasSent";
