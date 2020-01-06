@@ -1,10 +1,13 @@
 package org.georchestra.console.ws.utils;
 
 import java.util.Date;
+import java.util.List;
 
 import org.georchestra.console.dao.AdminLogDao;
+import org.georchestra.console.dto.Account;
 import org.georchestra.console.model.AdminLogEntry;
 import org.georchestra.console.model.AdminLogType;
+import org.georchestra.console.ws.backoffice.roles.RoleProtected;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -16,6 +19,9 @@ import org.apache.commons.logging.LogFactory;
 public class LogUtils {
     @Autowired
     private AdminLogDao logDao;
+
+    @Autowired
+    private RoleProtected roles;
 
     public void setLogDao(AdminLogDao logDao) {
         this.logDao = logDao;
@@ -30,7 +36,7 @@ public class LogUtils {
      * @type type AdminLogType of log event
      * @param values String that represent changed attributes
      */
-    public AdminLogEntry createLog(String target, AdminLogType type, String values) {
+    public AdminLogEntry createLog(String target, AdminLogType type, JSONObject values) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         AdminLogEntry log = new AdminLogEntry();
@@ -52,7 +58,7 @@ public class LogUtils {
                     JSONObject errorsjson = new JSONObject();
                     errorsjson.put("error",
                             "Error while inserting admin log in database, see admin log file for more information");
-                    log.setChanged(errorsjson.toString());
+                    log.setChanged(errorsjson);
                     logDao.save(log);
                 }
 
@@ -90,11 +96,80 @@ public class LogUtils {
      * @param attributeName String
      * @param oldValue      String
      * @param newValue      String
-     * @param type          AdminLogType that could be any type of log, use to
+     * @param type          AdminLogType that could be any type of log
      */
     public void createAndLogDetails(String target, String attributeName, String oldValue, String newValue,
             AdminLogType type) {
         JSONObject details = getLogDetails(attributeName, oldValue, newValue, type);
-        this.createLog(target, type, details.toString());
+        this.createLog(target, type, details);
+    }
+
+    /**
+     * Parse a list of accounts to log when a role was added to a user
+     * 
+     * @param roleId String role uid
+     * @param users  List<Account>
+     * @param admin  String as user's uid that realized modification
+     * @param type   AdminLogType that could be any type of log
+     */
+    private void parseUsers(List<Account> users, AdminLogType type, JSONObject details) {
+        if (users != null && !users.isEmpty()) {
+            for (Account user : users) {
+                // Add log entry when role was removed
+                if (type != null && user.getUid() != null && details.length() > 0) {
+                    this.createLog(user.getUid(), type, details);
+                }
+            }
+        }
+    }
+
+    /**
+     * Parse a list of roles to log when a role was added to a user. This methods
+     * identify custom and system roles
+     * 
+     * @param roles  String role as uid
+     * @param users  List<Account>
+     * @param admin  String as user's uid that realized modification
+     * @param action boolean to identify if a role was removed (false) or added
+     *               (true)
+     */
+    private void parseRoles(List<String> roles, List<Account> users, boolean action) {
+        AdminLogType type;
+        if(roles != null && !roles.isEmpty()) {
+	        // parse roles
+	        for (String roleName : roles) {
+	            // log details
+	            JSONObject details = new JSONObject();
+	            details.put("isRole", true);
+	            // get log details
+	            if (!this.roles.isProtected(roleName)) {
+	                type = action ? AdminLogType.CUSTOM_ROLE_ADDED : AdminLogType.CUSTOM_ROLE_REMOVED;
+	                details = this.getLogDetails(roleName, null, roleName, type);
+	            } else {
+	                type = action ? AdminLogType.SYSTEM_ROLE_ADDED : AdminLogType.SYSTEM_ROLE_REMOVED;
+	                details = this.getLogDetails(roleName, roleName, null, type);
+	            }
+	            this.parseUsers(users, type, details);
+	        }
+        }
+    }
+
+    /**
+     * Parse a list of roles to log for each users if a role was added or removed
+     * 
+     * @param roles  String role uid
+     * @param users  List<Account>
+     * @param admin  String as user's uid that realized modification
+     * @param action boolean to identify if a role was removed (false) or added
+     *               (true)
+     */
+    public void logRolesUsersAction(List<String> putRole, List<String> deleteRole, List<Account> users) {
+        // role is added to users
+        if (putRole != null && !putRole.isEmpty()) {
+            this.parseRoles(putRole, users, true);
+        } else if(deleteRole != null && !deleteRole.isEmpty()){
+            // role is removed for users
+            this.parseRoles(deleteRole, users, false);
+        }
     }
 }
