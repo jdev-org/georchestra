@@ -438,7 +438,7 @@ public class UsersController {
         accountDao.update(originalAcount, modifiedAccount, auth.getName());
         // log update modifications
         if (logUtils != null) {
-        	logUtils.logChanges(modifiedAccount, originalAcount);
+            logUtils.logChanges(modifiedAccount, originalAcount);
         }
 
         if (!modifiedAccount.getOrg().equals(originalAcount.getOrg())) {
@@ -457,11 +457,11 @@ public class UsersController {
                         modifiedAccount.getEmail(), modifiedAccount.getCommonName(), modifiedAccount.getUid());
             }
             roleDao.modifyUser(originalAcount, modifiedAccount);
-            
+
             // log pending user validation
             if (isPendingValidation) {
                 logUtils.createLog(modifiedAccount.getUid(), AdminLogType.PENDING_USER_ACCEPTED, null);
-            }   
+            }
         }
 
         if (accountDao.hasUserLoginChanged(originalAcount, modifiedAccount)) {
@@ -476,7 +476,7 @@ public class UsersController {
             this.emailFactory.sendAccountUidRenamedEmail(request.getSession().getServletContext(),
                     modifiedAccount.getEmail(), modifiedAccount.getCommonName(), modifiedAccount.getUid());
         }
-        
+
         return modifiedAccount;
     }
 
