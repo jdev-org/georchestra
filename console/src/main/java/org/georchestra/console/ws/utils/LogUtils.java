@@ -43,7 +43,7 @@ public class LogUtils {
      * @type type AdminLogType of log event
      * @param values String that represent changed attributes
      */
-    public AdminLogEntry createLog(String target, AdminLogType type, JSONObject values) {
+    public AdminLogEntry createLog(String target, AdminLogType type, String values) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         AdminLogEntry log = new AdminLogEntry();
@@ -65,7 +65,7 @@ public class LogUtils {
                     JSONObject errorsjson = new JSONObject();
                     errorsjson.put("error",
                             "Error while inserting admin log in database, see admin log file for more information");
-                    log.setChanged(errorsjson);
+                    log.setChanged(errorsjson.toString());
                     logDao.save(log);
                 }
 
@@ -108,7 +108,7 @@ public class LogUtils {
     public void createAndLogDetails(String target, String attributeName, String oldValue, String newValue,
             AdminLogType type) {
         JSONObject details = getLogDetails(attributeName, oldValue, newValue, type);
-        createLog(target, type, details);
+        createLog(target, type, details.toString());
     }
 
     /**
@@ -124,7 +124,7 @@ public class LogUtils {
             for (Account user : users) {
                 // Add log entry when role was removed
                 if (type != null && user.getUid() != null && details.length() > 0) {
-                    createLog(user.getUid(), type, details);
+                    createLog(user.getUid(), type, details.toString());
                 }
             }
         }
@@ -147,7 +147,6 @@ public class LogUtils {
             for (String roleName : roles) {
                 // log details
                 JSONObject details = new JSONObject();
-                details.put("isRole", true);
                 // get log details
                 if (!this.roles.isProtected(roleName)) {
                     type = action ? AdminLogType.CUSTOM_ROLE_ADDED : AdminLogType.CUSTOM_ROLE_REMOVED;
@@ -156,6 +155,7 @@ public class LogUtils {
                     type = action ? AdminLogType.SYSTEM_ROLE_ADDED : AdminLogType.SYSTEM_ROLE_REMOVED;
                     details = getLogDetails(roleName, roleName, null, type);
                 }
+                details.put("isRole", true);
                 parseUsers(users, type, details);
             }
         }
@@ -226,7 +226,7 @@ public class LogUtils {
                     AdminLogType.ORG_ATTRIBUTE_CHANGED);
             details.put("added", addLen);
             details.put("removed", rmLen);
-            createLog(id, AdminLogType.ORG_ATTRIBUTE_CHANGED, details);
+            createLog(id, AdminLogType.ORG_ATTRIBUTE_CHANGED, details.toString());
         }
     }
 
@@ -243,13 +243,13 @@ public class LogUtils {
         AdminLogType type = AdminLogType.ORG_ATTRIBUTE_CHANGED;
         // log orgType changed
         if (!orgExt.getOrgType().equals(json.optString(OrgExt.JSON_ORG_TYPE))) {
-            createAndLogDetails(orgId, OrgExt.JSON_ORG_TYPE, orgExt.getOrgType(),
-                    json.optString(OrgExt.JSON_ORG_TYPE), type);
+            createAndLogDetails(orgId, OrgExt.JSON_ORG_TYPE, orgExt.getOrgType(), json.optString(OrgExt.JSON_ORG_TYPE),
+                    type);
         }
 
         if (!orgExt.getAddress().equals(json.optString(OrgExt.JSON_ADDRESS))) {
-            createAndLogDetails(orgId, OrgExt.JSON_ADDRESS, orgExt.getAddress(),
-                    json.optString(OrgExt.JSON_ADDRESS), type);
+            createAndLogDetails(orgId, OrgExt.JSON_ADDRESS, orgExt.getAddress(), json.optString(OrgExt.JSON_ADDRESS),
+                    type);
         }
         // log description changed
         if (!orgExt.getDescription().equals(json.optString(Org.JSON_DESCRIPTION))) {
@@ -288,13 +288,12 @@ public class LogUtils {
         }
         if (modified.getCommonName() != null && !modified.getCommonName().equals(original.getCommonName())) {
             // log CN changed
-            createAndLogDetails(target, UserSchema.COMMON_NAME_KEY, original.getCommonName(),
-                    modified.getCommonName(), type);
+            createAndLogDetails(target, UserSchema.COMMON_NAME_KEY, original.getCommonName(), modified.getCommonName(),
+                    type);
         }
         if (modified.getSurname() != null && !modified.getSurname().equals(original.getSurname())) {
             // log SN changed
-            createAndLogDetails(target, UserSchema.SURNAME_KEY, original.getSurname(), modified.getSurname(),
-                    type);
+            createAndLogDetails(target, UserSchema.SURNAME_KEY, original.getSurname(), modified.getSurname(), type);
         }
         if (modified.getEmail() != null && !modified.getEmail().equals(original.getEmail())) {
             // log email changed
@@ -315,8 +314,8 @@ public class LogUtils {
         }
         if (modified.getGivenName() != null && !modified.getGivenName().equals(original.getGivenName())) {
             // log GN changed
-            createAndLogDetails(target, UserSchema.GIVEN_NAME_KEY, original.getGivenName(),
-                    modified.getGivenName(), type);
+            createAndLogDetails(target, UserSchema.GIVEN_NAME_KEY, original.getGivenName(), modified.getGivenName(),
+                    type);
         }
         if (modified.getTitle() != null && !modified.getTitle().equals(original.getTitle())) {
             // log title changed
@@ -333,8 +332,7 @@ public class LogUtils {
         }
         if (modified.getLocality() != null && !modified.getLocality().equals(original.getLocality())) {
             // log L changed
-            createAndLogDetails(target, UserSchema.LOCALITY_KEY, original.getLocality(), modified.getLocality(),
-                    type);
+            createAndLogDetails(target, UserSchema.LOCALITY_KEY, original.getLocality(), modified.getLocality(), type);
         }
         if (modified.getFacsimile() != null && !modified.getFacsimile().equals(original.getFacsimile())) {
             // log fax changed
@@ -344,13 +342,12 @@ public class LogUtils {
 
         if (modified.getPostalCode() != null && !modified.getPostalCode().equals(original.getPostalCode())) {
             // log postal code changed
-            createAndLogDetails(target, UserSchema.POSTAL_CODE_KEY, original.getPostalCode(),
-                    modified.getPostalCode(), type);
+            createAndLogDetails(target, UserSchema.POSTAL_CODE_KEY, original.getPostalCode(), modified.getPostalCode(),
+                    type);
         }
         if (modified.getContext() != null && !modified.getContext().equals(original.getContext())) {
             // log context changed
-            createAndLogDetails(target, UserSchema.CONTEXT_KEY, original.getContext(), modified.getContext(),
-                    type);
+            createAndLogDetails(target, UserSchema.CONTEXT_KEY, original.getContext(), modified.getContext(), type);
         }
 
         // special cases when the attribute changed to get null value
@@ -373,8 +370,7 @@ public class LogUtils {
                     ? modified.getPrivacyPolicyAgreementDate().toString()
                     : "";
             if (!newValue.equals(oldValue)) {
-                createAndLogDetails(target, UserSchema.PRIVACY_POLICY_AGREEMENT_DATE_KEY, oldValue, newValue,
-                        type);
+                createAndLogDetails(target, UserSchema.PRIVACY_POLICY_AGREEMENT_DATE_KEY, oldValue, newValue, type);
             }
         }
         if (modified.getManager() == null || original.getManager() == null) {
