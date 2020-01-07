@@ -54,7 +54,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -68,8 +67,8 @@ import org.apache.commons.logging.LogFactory;
 
 @Controller
 public class OrgsController {
-	
-	private static final Log LOG = LogFactory.getLog(LogUtils.class.getName());
+
+    private static final Log LOG = LogFactory.getLog(LogUtils.class.getName());
 
     private static final String BASE_MAPPING = "/private";
     private static final String BASE_RESOURCE = "orgs";
@@ -227,7 +226,7 @@ public class OrgsController {
             initialOrg = org.clone();
             initialOrgExt = orgExt.clone();
         } catch (CloneNotSupportedException e) {
-        	LOG.info("Log action will fail. Clone org or orgExt is not supported.");
+            LOG.info("Log action will fail. Clone org or orgExt is not supported.");
             e.printStackTrace();
         }
         this.updateFromRequest(org, json);
