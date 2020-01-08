@@ -218,17 +218,7 @@
       </div>
       <!--log breadcrumb-->
       <div class="panel-body" ng-if="user.tab=='logs'">
-        <ol class="breadcrumb">
-          <li class="active" ng-if="!user.log">
-            <span translate>logs.logs</span> <span class="badge">{{::user.logs.length}}</span>
-          </li>
-          <li class="active" ng-if="user.log">
-            <a href="javascript:void(0);" ng-click="user.closeLog()">
-              <span translate>logs.logs</span> <span class="badge">{{::user.logs.length}}</span>
-            </a>
-          </li>
-          <li class="active" ng-if="user.log">{{::user.log.type}}</li>
-        </ol>
+        <h4 translate>user.logs</h4>
         <!--logs component-->
         <logger filter="false" title="false" user="user.uid"></logger>
       </div>
