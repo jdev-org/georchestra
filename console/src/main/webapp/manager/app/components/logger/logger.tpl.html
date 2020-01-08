@@ -6,11 +6,11 @@
     <h4 ng-if="logger.getTitle()" translate>logs.title</h4>
     <hr>
     <ol class="breadcrumb" ng-if="logger.log">    
-    <li class="active" ng-if="logger.log">
-        <a href="javascript:void(0);" ng-click="logger.closeLog()">
-        <span translate>logs.all</span> <span class="badge">{{::logger.logs.length}}</span>
-        </a>
-    </li>
+        <li class="active" ng-if="logger.log">
+            <a href="javascript:void(0);" ng-click="logger.closeLog()">
+            <span translate>logs.all</span> <span class="badge">{{::logger.logs.length}}</span>
+            </a>
+        </li>
     <li class="active" ng-if="logger.log.trusted">{{::logger.log.changed.subject}}</li>
     <li class="active" ng-if="!logger.log.trusted">{{::logger.log.type}}</li>
     </ol>
