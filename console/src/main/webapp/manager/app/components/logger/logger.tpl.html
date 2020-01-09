@@ -7,7 +7,7 @@
     <hr>
     <ol class="breadcrumb" ng-if="logger.log">    
         <li class="active" ng-if="logger.log">
-            <a href="javascript:void(0);" ng-click="logger.closeLog()">
+            <a href="javascript:void(0);" ng-click="logger.closeLog()" title="">
             <span translate>logs.all</span> <span class="badge">{{::logger.logs.length}}</span>
             </a>
         </li>
@@ -53,18 +53,18 @@
     <tbody>
         <tr dir-paginate="log in logger.logs | logs: logger.type:logger.admin:logger.target:logger.date | orderBy: '-date' | itemsPerPage: logger.itemsPerPage">
             <td>{{::log.date | logDate}}
-            <td><a ng-link="user({id: log.admin, tab: 'infos'})">{{::log.admin}}</a>
+            <td><a ng-link="user({id: log.admin, tab: 'infos'})" title="">{{::log.admin}}</a>
             <!--Target-->
             <td>
             <!--user or user's role modification-->
-            <a ng-if="logger.getType(log) === 'USER'" ng-link="user({id: log.target, tab: 'infos'})">{{::log.target}}</a>
+            <a ng-if="logger.getType(log) === 'USER'" ng-link="user({id: log.target, tab: 'infos'})" title="">{{::log.target}}</a>
             <!--org-->
-            <a ng-if="logger.getType(log) === 'ORG'" ng-link="org({org: log.target, tab: 'infos'})">
+            <a ng-if="logger.getType(log) === 'ORG'" ng-link="org({org: log.target, tab: 'infos'})" title="">
                 <span ng-if="logger.orgsId[log.target]">{{::logger.orgsId[log.target]}}</span>
                 <span ng-if="!logger.orgsId[log.target]">{{::log.target}}</span>
             </a>
             <!--role-->
-            <a ng-if="logger.getType(log) === 'ROLE'" ng-link="role({role: log.target, tab: 'infos'})">
+            <a ng-if="logger.getType(log) === 'ROLE'" ng-link="role({role: log.target, tab: 'infos'})" title="">
                 {{::log.target}}</a>
             <!--refused or deleted-->
             <span ng-if="logger.getType(log) === ''">{{::log.target}}</span>
@@ -72,7 +72,7 @@
             <!--Type-->
             <td ng-if="!log.changed"> {{::log.type}}
             <td>
-            <a ng-if="log.changed && log.changed.field != log.target" ng-click="logger.openLog(log)" href="javascript:void(0);">
+            <a ng-if="log.changed && log.changed.field != log.target" title="" ng-click="logger.openLog(log)" href="javascript:void(0);">
                 {{::log.type + (log.changed.field ? ' (' + log.changed.field + ')' : '')}}
             </a>
             <span ng-if="log.changed && log.changed.field === log.target">
@@ -86,9 +86,9 @@
     <div ng-if="logger.getDescription(log) === 'message'">
         <h4>
             <small ng-if="logger.log.trusted">
-            <a ng-link="user({id: logger.log.changed.sender, tab: 'infos'})">{{::logger.log.changed.sender}}</a>
+            <a ng-link="user({id: logger.log.changed.sender, tab: 'infos'})" title="">{{::logger.log.changed.sender}}</a>
             <span translate> date.to</span>
-            <a ng-link="user({id: logger.log.changed.recipient, tab: 'infos'})"> {{::logger.log.changed.recipient}}</a>,
+            <a ng-link="user({id: logger.log.changed.recipient, tab: 'infos'})" title=""> {{::logger.log.changed.recipient}}</a>,
             <span translate>msg.on</span> {{logger.log.date | date: 'mediumDate'}}
             </small>
         </h4>
@@ -111,18 +111,18 @@
             <small>
             <span translate>logs.target</span> 
             <!--display user name-->
-            <a ng-if="logger.getType(logger.log) === 'USER'" ng-link="user({id: logger.log.target, tab: 'infos'})">
+            <a ng-if="logger.getType(logger.log) === 'USER'" title="" ng-link="user({id: logger.log.target, tab: 'infos'})">
                 {{::logger.log.target}}
             </a>
             <!--or display org name-->
-            <a ng-if="logger.getType(logs.log) === 'ORG'" ng-link="org({org: logger.log.target, tab: 'infos'})">
+            <a ng-if="logger.getType(logs.log) === 'ORG'" title="" ng-link="org({org: logger.log.target, tab: 'infos'})">
                 <span ng-if="logger.orgsId[log.target]">{{::logger.orgsId[logs.log.target]}}</span>
                 <span ng-if="!logger.orgsId[log.target]">{{::logger.log.target}}</span>          
             </a>
             <!--or display target only if the target was removed-->
             <span ng-if="logger.getType(logger.log) === ''">{{::logger.log.target}}</span>
             <span translate>logs.to</span>
-            <a ng-link="user({id: logger.log.admin, tab: 'infos'})">{{::logger.log.admin}}</a>, 
+            <a ng-link="user({id: logger.log.admin, tab: 'infos'})" title="">{{::logger.log.admin}}</a>, 
             <span translate>msg.on</span> {{logger.log.date | date: 'mediumDate'}}
             </small>
         </h4>
