@@ -461,7 +461,9 @@ public class RolesController {
         this.roleDao.deleteUsersInRoles(deleteRole, accounts, auth.getName());
 
         // create log
-        logUtils.logRolesUsersAction(putRole, deleteRole, accounts);
+        if (logUtils != null) {
+            logUtils.logRolesUsersAction(putRole, deleteRole, accounts);
+        }
 
         ResponseUtil.writeSuccess(response);
     }
