@@ -34,7 +34,6 @@ import org.georchestra.ds.DataServiceException;
 import org.georchestra.lib.sqlcommand.DataCommand;
 import org.georchestra.lib.sqlcommand.DataCommandException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.ldap.NameNotFoundException;
 
 /**
