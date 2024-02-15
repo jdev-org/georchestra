@@ -15,6 +15,7 @@ import org.georchestra.console.model.DelegationEntry;
 import org.georchestra.ds.orgs.Org;
 import org.georchestra.ds.orgs.OrgsDao;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
@@ -29,11 +30,11 @@ public class AdvancedDelegationDao {
     private OrgsDao orgsDao;
 
     @Autowired
-    private DataSource ds;
+    private DataSource dataSource;
 
     public List<DelegationEntry> findByOrg(String org) throws SQLException {
         final String sql = "SELECT uid, array_to_string(orgs, ',') AS orgs, array_to_string(roles, ',') AS roles FROM console.delegations WHERE ? = ANY(orgs)";
-        try (Connection c = ds.getConnection(); //
+        try (Connection c = dataSource.getConnection(); //
                 PreparedStatement byOrgStatement = c.prepareStatement(sql)) {
             byOrgStatement.setString(1, org);
             try (ResultSet resultSet = byOrgStatement.executeQuery()) {
@@ -44,7 +45,7 @@ public class AdvancedDelegationDao {
 
     public List<DelegationEntry> findByRole(String cn) throws SQLException {
         final String sql = "SELECT uid, array_to_string(orgs, ',') AS orgs, array_to_string(roles, ',') AS roles FROM console.delegations WHERE ? = ANY(roles)";
-        try (Connection c = ds.getConnection(); //
+        try (Connection c = dataSource.getConnection(); //
                 PreparedStatement byRoleStatement = c.prepareStatement(sql)) {
             byRoleStatement.setString(1, cn);
             try (ResultSet resultSet = byRoleStatement.executeQuery()) {

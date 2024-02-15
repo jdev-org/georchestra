@@ -39,9 +39,6 @@ import javax.sql.DataSource;
 
 import org.georchestra.ds.DataServiceException;
 import org.georchestra.ds.users.Account;
-import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.io.ParseException;
-import org.locationtech.jts.io.WKBReader;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -77,25 +74,32 @@ public class AccountGDPRDaoImpl implements AccountGDPRDao {
     private static final String DELETE_OGCSTATS_RECORDS = "update ogcstatistics.ogc_services_log set user_name = ? where user_name = ?";
 
     @Autowired
-    private DataSource ds;
+    private DataSource dataSource;
+
+    @Autowired
+    private DataSource dataSourceGeonetwork;
 
     public void setDataSource(DataSource dataSource) {
-        this.ds = dataSource;
+        this.dataSource = dataSource;
+    }
+
+    public void setDataSourceGN(DataSource dataSource) {
+        this.dataSourceGeonetwork = dataSource;
     }
 
     /**
-     * Deletes (obfuscates) all GDPR sensitive records for the given account and
+     * s Deletes (obfuscates) all GDPR sensitive records for the given account and
      * returns a summary of records affected. Deleting here means making the records
      * untraceable to the account owner, but keep them under a "ghost" user name
      * ({@code _deleted_account_}) for statistical purposes.
      */
     public @Override DeletedRecords deleteAccountRecords(@NonNull Account account) throws DataServiceException {
-        try (Connection conn = ds.getConnection()) {
+        try (Connection conn = dataSource.getConnection(); Connection connGN = dataSourceGeonetwork.getConnection()) {
             int metadataRecords;
             int ogcStatsRecords = 0;
             conn.setAutoCommit(false);
             try {
-                metadataRecords = deleteUserMetadataRecords(conn, account);
+                metadataRecords = deleteUserMetadataRecords(connGN, account);
                 conn.commit();
             } catch (SQLException e) {
                 conn.rollback();
@@ -195,7 +199,7 @@ public class AccountGDPRDaoImpl implements AccountGDPRDao {
     private <R> int visitRecords(String psQuery, PreparedStatementBuilder psBuilder, Function<ResultSet, R> mapper,
             @NonNull Consumer<R> consumer) throws DataServiceException {
 
-        try (Connection c = ds.getConnection(); PreparedStatement ps = c.prepareStatement(psQuery)) {
+        try (Connection c = dataSourceGeonetwork.getConnection(); PreparedStatement ps = c.prepareStatement(psQuery)) {
 
             psBuilder.accept(ps);
 
