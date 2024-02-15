@@ -155,7 +155,7 @@
     <property name="driverClassName" value="org.postgresql.Driver"/>
   </bean>
 
-    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" depends-on="waitForDb">
+    <bean id="dataSource" primary="true" class="com.mchange.v2.c3p0.ComboPooledDataSource" depends-on="waitForDb">
         <property name="jdbcUrl" value="jdbc:postgresql://${pgsqlHost}:${pgsqlPort}/${pgsqlDatabase}"/>
         <property name="user" value="${pgsqlUser}"/>
         <property name="password" value="${pgsqlPassword}"/>
