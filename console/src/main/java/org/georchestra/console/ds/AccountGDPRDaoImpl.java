@@ -98,14 +98,15 @@ public class AccountGDPRDaoImpl implements AccountGDPRDao {
             int metadataRecords;
             int ogcStatsRecords = 0;
             conn.setAutoCommit(false);
+            connGN.setAutoCommit(false);
             try {
                 metadataRecords = deleteUserMetadataRecords(connGN, account);
-                conn.commit();
+                connGN.commit();
             } catch (SQLException e) {
-                conn.rollback();
+                connGN.rollback();
                 throw new DataServiceException(e);
             } finally {
-                conn.setAutoCommit(true);
+                connGN.setAutoCommit(true);
             }
             conn.setAutoCommit(false);
             try {
@@ -172,9 +173,9 @@ public class AccountGDPRDaoImpl implements AccountGDPRDao {
         final String userName = owner.getUid();
         try {
             int reccount = visitRecords(QUERY_OGCSTATS_RECORDS, ps -> ps.setString(1, userName),
-                    AccountGDPRDaoImpl::createOgcStatisticsRecord, consumer);
+                    AccountGDPRDaoImpl::createOgcStatisticsRecord, consumer, dataSource.getConnection());
             log.info("Extracted {} OGC statistics records for user {}", reccount, userName);
-        } catch (DataServiceException e) {
+        } catch (DataServiceException | SQLException e) {
             throw new IllegalStateException(e);
         }
     }
@@ -184,9 +185,9 @@ public class AccountGDPRDaoImpl implements AccountGDPRDao {
         final String userName = owner.getUid();
         try {
             int reccount = visitRecords(QUERY_METADATA_RECORDS, ps -> ps.setString(1, userName),
-                    AccountGDPRDaoImpl::createMetadataRecord, consumer);
+                    AccountGDPRDaoImpl::createMetadataRecord, consumer, dataSourceGeonetwork.getConnection());
             log.info("Extracted {} metadata records for user {}", reccount, userName);
-        } catch (DataServiceException e) {
+        } catch (DataServiceException | SQLException e) {
             throw new IllegalStateException(e);
         }
     }
@@ -197,9 +198,9 @@ public class AccountGDPRDaoImpl implements AccountGDPRDao {
     }
 
     private <R> int visitRecords(String psQuery, PreparedStatementBuilder psBuilder, Function<ResultSet, R> mapper,
-            @NonNull Consumer<R> consumer) throws DataServiceException {
+            @NonNull Consumer<R> consumer, Connection c) throws DataServiceException {
 
-        try (Connection c = dataSourceGeonetwork.getConnection(); PreparedStatement ps = c.prepareStatement(psQuery)) {
+        try (PreparedStatement ps = c.prepareStatement(psQuery)) {
 
             psBuilder.accept(ps);
 
