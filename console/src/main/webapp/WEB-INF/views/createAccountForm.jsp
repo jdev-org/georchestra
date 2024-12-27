@@ -132,6 +132,10 @@
                         <jsp:attribute name="label"><s:message code="org.creation.orgLogo"/></jsp:attribute>
                     </t:textarea>
 
+                    <t:textarea path="orgUniqueId" required="${orgUniqueIdRequired}">
+                        <jsp:attribute name="uniqueOrganizationId"><s:message code="org.creation.orgUniqueId"/></jsp:attribute>
+                    </t:textarea>
+
                     <link rel="stylesheet" href="/console/manager/public/libraries.css">
                     <link rel="stylesheet" href="/console/manager/public/app.css">
                     <style>
