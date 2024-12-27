@@ -110,6 +110,7 @@ public class EditOrgDetailsFormController {
         validation.validateOrgField("url", formBean.getUrl(), resultErrors);
         validation.validateOrgField("address", formBean.getAddress(), resultErrors);
         validation.validateOrgField("description", formBean.getDescription(), resultErrors);
+        validation.validateOrgField("uniqueOrganizationId", formBean.getUniqueOrganizationId(), resultErrors);
         // TODO validate mail address for the organization ?
 
         if (resultErrors.hasErrors()) {
@@ -122,6 +123,7 @@ public class EditOrgDetailsFormController {
         orgOrigin.setDescription(formBean.getDescription());
         orgOrigin.setUrl(formBean.getUrl());
         orgOrigin.setAddress(formBean.getAddress());
+        orgOrigin.setUniqueOrganizationId(formBean.getUniqueOrganizationId());
 
         if (!logo.isEmpty()) {
             orgOrigin.setLogo(transformLogoFileToBase64(logo));

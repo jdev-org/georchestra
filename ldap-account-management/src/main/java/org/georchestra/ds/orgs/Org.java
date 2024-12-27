@@ -59,6 +59,7 @@ public class Org extends ReferenceAware implements Comparable<Org>, Cloneable {
     public static final String JSON_ADDRESS = "address";
     public static final String JSON_ORG_TYPE = "orgType";
     public static final String JSON_MAIL = "mail";
+    public static final String JSON_UNIQUE_ORGANIZATION_ID = "uniqeOrganizationId";
 
     private String id;
     private String name;
@@ -179,5 +180,14 @@ public class Org extends ReferenceAware implements Comparable<Org>, Cloneable {
 
     public void setMail(String mail) {
         this.ext.setMail(mail);
+    }
+
+    @JsonProperty(JSON_UNIQUE_ORGANIZATION_ID)
+    public void setUniqueOrganizationId(String uniqueOrganizationId) {
+        this.ext.setUniqueOrganizationId(uniqueOrganizationId);
+    }
+
+    public String getUniqueOrganizationId() {
+        return this.ext.getUniqueOrganizationId();
     }
 }
