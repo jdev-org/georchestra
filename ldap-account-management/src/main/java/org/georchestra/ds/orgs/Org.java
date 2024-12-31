@@ -59,7 +59,7 @@ public class Org extends ReferenceAware implements Comparable<Org>, Cloneable {
     public static final String JSON_ADDRESS = "address";
     public static final String JSON_ORG_TYPE = "orgType";
     public static final String JSON_MAIL = "mail";
-    public static final String JSON_UNIQUE_ORGANIZATION_ID = "uniqeOrganizationId";
+    public static final String JSON_UNIQUE_ORGANIZATION_ID = "uniqueOrganizationId";
 
     private String id;
     private String name;
