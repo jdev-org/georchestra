@@ -34,6 +34,7 @@ class OrgController {
     this.org = $injector.get('Orgs').get({
       id: $routeParams.org
     }, () => this.loadUsers())
+    console.log(this.org)
     this.required = $injector.get('OrgsRequired').query()
     this.orgTypeValues = $injector.get('OrgsType').query()
 
@@ -55,6 +56,7 @@ class OrgController {
   save () {
     const flash = this.$injector.get('Flash')
     const $httpDefaultCache = this.$injector.get('$cacheFactory').get('$http')
+    console.log(this.org)
     this.org.$update(() => {
       $httpDefaultCache.removeAll()
       flash.create('success', this.i18n.updated)

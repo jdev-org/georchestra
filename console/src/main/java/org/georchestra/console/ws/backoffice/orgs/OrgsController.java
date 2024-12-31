@@ -169,6 +169,25 @@ public class OrgsController {
     }
 
     /**
+     * Retreive full information about one org as JSON document from unique
+     * organization id number (e.g french SIRET number). Following keys will be
+     * available :
+     *
+     * * 'id' (not used) * 'name' * 'shortName' * 'cities' as json array ex:
+     * [654,865498,98364,9834534,984984,6978984,98498] * 'status' * 'orgType' *
+     * 'address' * 'members' as json array ex: ["testadmin", "testuser"]
+     *
+     */
+    @RequestMapping(value = REQUEST_MAPPING
+            + "/uoi/{uniqueOrganizationId:.+}", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public Org getOrgInfosFromUniqueOrgId(@PathVariable String uniqOrgId) {
+        Org orgInfos = this.orgDao.findByUniqueOrganizationId(uniqOrgId);
+        this.checkOrgAuthorization(orgInfos.getId());
+        return orgInfos;
+    }
+
+    /**
      * Update information of one org
      *
      * Request should contain Json formated document containing following keys :
@@ -482,6 +501,7 @@ public class OrgsController {
         org.setUrl(json.optString(Org.JSON_URL));
         org.setLogo(json.optString(Org.JSON_LOGO));
         org.setMail(json.optString(Org.JSON_MAIL));
+        org.setUniqueOrganizationId(json.optString(Org.JSON_UNIQUE_ORGANIZATION_ID));
     }
 
     /**

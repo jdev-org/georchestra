@@ -54,7 +54,8 @@ import org.springframework.web.multipart.MultipartFile;
 public class EditOrgDetailsFormController {
     private OrgsDao orgsDao;
     private Validation validation;
-    private static final String[] FIELDS = { "id", "url", "description", "logo", "name", "address", "mail" };
+    private static final String[] FIELDS = { "id", "url", "description", "logo", "name", "address", "mail",
+            "uniqueOrganizationId" };
 
     private static final Log LOG = LogFactory.getLog(EditOrgDetailsFormController.class.getName());
 
@@ -94,6 +95,7 @@ public class EditOrgDetailsFormController {
         model.addAttribute("id", org.getId());
         model.addAttribute("logo", org.getLogo());
         model.addAttribute("mail", org.getMail());
+        model.addAttribute("uniqueOrganizationId", org.getUniqueOrganizationId());
         HttpSession session = request.getSession();
         for (String f : FIELDS) {
             if (validation.isOrgFieldRequired(f)) {
@@ -156,6 +158,7 @@ public class EditOrgDetailsFormController {
         formBean.setAddress(org.getAddress());
         formBean.setOrgType(org.getOrgType());
         formBean.setMail(org.getMail());
+        formBean.setUniqueOrganizationId(org.getUniqueOrganizationId());
         return formBean;
     }
 
@@ -193,6 +196,12 @@ public class EditOrgDetailsFormController {
         }
         if (StringUtils.isNotEmpty(org.getMail()) && !org.getMail().equals(formBean.getMail())) {
             logUtils.createAndLogDetails(id, Org.JSON_MAIL, org.getMail(), formBean.getMail(), type);
+        }
+
+        if (StringUtils.isNotEmpty(org.getUniqueOrganizationId())
+                && !org.getUniqueOrganizationId().equals(formBean.getUniqueOrganizationId())) {
+            logUtils.createAndLogDetails(id, Org.JSON_UNIQUE_ORGANIZATION_ID, org.getUniqueOrganizationId(),
+                    formBean.getUniqueOrganizationId(), type);
         }
     }
 

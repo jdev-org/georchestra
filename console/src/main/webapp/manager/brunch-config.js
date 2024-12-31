@@ -1,5 +1,11 @@
 module.exports = {
   config: {
+  // Changer le port par défaut ici
+    server: {
+      port: 4000, // Changer 4000 par le port de votre choix
+      path: 'http://localhost:4000',
+      run: true
+    },
     plugins: {
       ng_templates: {
         module: 'manager',
