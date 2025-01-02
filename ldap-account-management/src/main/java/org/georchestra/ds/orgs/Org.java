@@ -183,11 +183,11 @@ public class Org extends ReferenceAware implements Comparable<Org>, Cloneable {
     }
 
     @JsonProperty(JSON_ORG_UNIQ_ID)
-    public void setOrgUniqueId(String orgUniqueId) {
-        this.ext.setOrgUniqueId(orgUniqueId);
-    }
-
     public String getOrgUniqueId() {
         return this.ext.getOrgUniqueId();
+    }
+
+    public void setOrgUniqueId(String orgUniqueId) {
+        this.ext.setOrgUniqueId(orgUniqueId);
     }
 }
