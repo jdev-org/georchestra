@@ -181,8 +181,8 @@ public class OrgsController {
     @RequestMapping(value = REQUEST_MAPPING
             + "/uoi/{uniqueOrganizationId:.+}", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
     @ResponseBody
-    public Org getOrgInfosFromUniqueOrgId(@PathVariable String uniqOrgId) {
-        Org orgInfos = this.orgDao.findByUniqueOrganizationId(uniqOrgId);
+    public Org getOrgInfosFromUniqueOrgId(@PathVariable String uniqueOrganizationId) {
+        Org orgInfos = this.orgDao.findByUniqueOrganizationId(uniqueOrganizationId);
         this.checkOrgAuthorization(orgInfos.getId());
         return orgInfos;
     }
