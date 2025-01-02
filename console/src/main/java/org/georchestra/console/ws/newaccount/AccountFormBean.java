@@ -87,6 +87,8 @@ public class AccountFormBean implements Serializable {
 
     private @Getter @Setter String orgMail;
 
+    private @Getter @Setter String uniqueOganizationId;
+
     public boolean getPrivacyPolicyAgreed() {
         return privacyPolicyAgreed;
     }
