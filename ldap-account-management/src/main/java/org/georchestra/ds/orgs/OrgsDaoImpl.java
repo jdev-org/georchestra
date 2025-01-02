@@ -222,6 +222,9 @@ public class OrgsDaoImpl implements OrgsDao {
             if (org.getUniqueIdentifier() == null) {
                 org.setUniqueIdentifier(UUID.randomUUID());
             }
+            if(org.getOrgUniqueId() != null) {
+                context.setAttributeValue("orgUniqueId", org.getOrgUniqueId());
+            }
             setOrDeleteField(context, "mail", org.getMail());
             setOrDeleteField(context, "georchestraObjectIdentifier", org.getUniqueIdentifier().toString());
             setOrDeleteField(context, "knowledgeInformation", org.getNote());
@@ -259,6 +262,7 @@ public class OrgsDaoImpl implements OrgsDao {
                     orgExt.setLogo(asPhoto(attrs.get("jpegPhoto")));
                     orgExt.setPending(pending);
                     orgExt.setMail(asString(attrs.get("mail")));
+                    orgExt.setOrgUniqueId(asString(attrs.get("orgUniqueId")));
                     return orgExt;
                 }
 
