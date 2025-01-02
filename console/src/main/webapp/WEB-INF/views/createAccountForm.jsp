@@ -108,6 +108,10 @@
                       document.querySelector('#orgShortName').setAttribute('title', '<s:message code="org.shortNameFormat"/>')
                     </script>
 
+                    <t:input path="uniqueOrganizationId" required="${uniqueOrganizationIdRequired}">
+                        <jsp:attribute name="uniqueOrganizationId"><s:message code="org.creation.uniqueOrganizationId"/></jsp:attribute>
+                    </t:input>
+
                     <t:textarea path="orgAddress" required="${orgAddressRequired}">
                         <jsp:attribute name="label"><s:message code="org.creation.address"/></jsp:attribute>
                     </t:textarea>
@@ -130,10 +134,6 @@
 
                     <t:textarea path="orgLogo" required="${orgLogoRequired}">
                         <jsp:attribute name="label"><s:message code="org.creation.orgLogo"/></jsp:attribute>
-                    </t:textarea>
-
-                    <t:textarea path="orgUniqueId" required="${orgUniqueIdRequired}">
-                        <jsp:attribute name="uniqueOrganizationId"><s:message code="org.creation.orgUniqueId"/></jsp:attribute>
                     </t:textarea>
 
                     <link rel="stylesheet" href="/console/manager/public/libraries.css">
