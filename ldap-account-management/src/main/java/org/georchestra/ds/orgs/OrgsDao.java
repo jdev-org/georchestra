@@ -56,7 +56,7 @@ public interface OrgsDao {
 
     public Org findByUser(Account user);
 
-    public Org findByUniqueOrganizationId(String uniqueOrganizationId);
+    public Org findByOrgUniqueId(String orgUniqueId);
 
     /**
      * Search by {@link Org#getUniqueIdentifier()}

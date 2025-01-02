@@ -21,7 +21,7 @@ class OrgsController {
       })
       console.log(this.orgs)
       this.simplifiedOrgs = this.orgs.map((org) => {
-        return { id: org.id, name: org.name, shortName: org.shortName, membersCount: org.membersCount, pending: org.pending, status: org.status, uniqueOrganizationId: org.uniqueOrganizationId }
+        return { id: org.id, name: org.name, shortName: org.shortName, membersCount: org.membersCount, pending: org.pending, status: org.status, orgUniqueId: org.orgUniqueId }
       })
     })
 

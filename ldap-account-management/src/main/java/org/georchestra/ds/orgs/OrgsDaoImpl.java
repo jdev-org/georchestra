@@ -204,7 +204,7 @@ public class OrgsDaoImpl implements OrgsDao {
                             .map(LdapNameBuilder::build).map(name -> name.getRdn(name.size() - 1).getValue().toString())
                             .collect(Collectors.toList()));
                     org.setPending(pending);
-                    org.setUniqueOrganizationId(asStringStream(attrs, "uniqueOrganizationId").collect(joining(",")));
+                    org.setOrgUniqueId(asStringStream(attrs, "orgUniqueId").collect(joining(",")));
                     return org;
                 }
             };
@@ -398,9 +398,8 @@ public class OrgsDaoImpl implements OrgsDao {
     }
 
     @Override
-    public Org findByUniqueOrganizationId(String uniqueOrganizationId) {
-        return findAllWithExt().filter(o -> uniqueOrganizationId.equals(o.getUniqueOrganizationId())).findFirst()
-                .orElse(null);
+    public Org findByOrgUniqueId(String orgUniqueId) {
+        return findAllWithExt().filter(o -> orgUniqueId.equals(o.getOrgUniqueId())).findFirst().orElse(null);
 
     }
 

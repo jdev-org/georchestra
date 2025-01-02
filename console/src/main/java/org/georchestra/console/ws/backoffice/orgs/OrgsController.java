@@ -179,10 +179,10 @@ public class OrgsController {
      *
      */
     @RequestMapping(value = REQUEST_MAPPING
-            + "/uoi/{uniqueOrganizationId:.+}", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
+            + "/uoi/{orgUniqueId:.+}", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
     @ResponseBody
-    public Org getOrgInfosFromUniqueOrgId(@PathVariable String uniqueOrganizationId) {
-        Org orgInfos = this.orgDao.findByUniqueOrganizationId(uniqueOrganizationId);
+    public Org getOrgInfosFromUniqueOrgId(@PathVariable String orgUniqueId) {
+        Org orgInfos = this.orgDao.findByOrgUniqueId(orgUniqueId);
         this.checkOrgAuthorization(orgInfos.getId());
         return orgInfos;
     }
@@ -501,7 +501,7 @@ public class OrgsController {
         org.setUrl(json.optString(Org.JSON_URL));
         org.setLogo(json.optString(Org.JSON_LOGO));
         org.setMail(json.optString(Org.JSON_MAIL));
-        org.setUniqueOrganizationId(json.optString(Org.JSON_UNIQUE_ORGANIZATION_ID));
+        org.setOrgUniqueId(json.optString(Org.JSON_ORG_UNIQUE_ID));
     }
 
     /**

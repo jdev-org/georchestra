@@ -55,7 +55,7 @@ public class EditOrgDetailsFormController {
     private OrgsDao orgsDao;
     private Validation validation;
     private static final String[] FIELDS = { "id", "url", "description", "logo", "name", "address", "mail",
-            "uniqueOrganizationId" };
+            "orgUniqueId" };
 
     private static final Log LOG = LogFactory.getLog(EditOrgDetailsFormController.class.getName());
 
@@ -95,7 +95,7 @@ public class EditOrgDetailsFormController {
         model.addAttribute("id", org.getId());
         model.addAttribute("logo", org.getLogo());
         model.addAttribute("mail", org.getMail());
-        model.addAttribute("uniqueOrganizationId", org.getUniqueOrganizationId());
+        model.addAttribute("orgUniqueId", org.getOrgUniqueId());
         HttpSession session = request.getSession();
         for (String f : FIELDS) {
             if (validation.isOrgFieldRequired(f)) {
@@ -112,7 +112,7 @@ public class EditOrgDetailsFormController {
         validation.validateOrgField("url", formBean.getUrl(), resultErrors);
         validation.validateOrgField("address", formBean.getAddress(), resultErrors);
         validation.validateOrgField("description", formBean.getDescription(), resultErrors);
-        validation.validateOrgField("uniqueOrganizationId", formBean.getUniqueOrganizationId(), resultErrors);
+        validation.validateOrgField("orgUniqueId", formBean.getOrgUniqueId(), resultErrors);
         // TODO validate mail address for the organization ?
 
         if (resultErrors.hasErrors()) {
@@ -125,7 +125,7 @@ public class EditOrgDetailsFormController {
         orgOrigin.setDescription(formBean.getDescription());
         orgOrigin.setUrl(formBean.getUrl());
         orgOrigin.setAddress(formBean.getAddress());
-        orgOrigin.setUniqueOrganizationId(formBean.getUniqueOrganizationId());
+        orgOrigin.setOrgUniqueId(formBean.getOrgUniqueId());
 
         if (!logo.isEmpty()) {
             orgOrigin.setLogo(transformLogoFileToBase64(logo));
@@ -158,7 +158,7 @@ public class EditOrgDetailsFormController {
         formBean.setAddress(org.getAddress());
         formBean.setOrgType(org.getOrgType());
         formBean.setMail(org.getMail());
-        formBean.setUniqueOrganizationId(org.getUniqueOrganizationId());
+        formBean.setOrgUniqueId(org.getOrgUniqueId());
         return formBean;
     }
 
@@ -198,10 +198,9 @@ public class EditOrgDetailsFormController {
             logUtils.createAndLogDetails(id, Org.JSON_MAIL, org.getMail(), formBean.getMail(), type);
         }
 
-        if (StringUtils.isNotEmpty(org.getUniqueOrganizationId())
-                && !org.getUniqueOrganizationId().equals(formBean.getUniqueOrganizationId())) {
-            logUtils.createAndLogDetails(id, Org.JSON_UNIQUE_ORGANIZATION_ID, org.getUniqueOrganizationId(),
-                    formBean.getUniqueOrganizationId(), type);
+        if (StringUtils.isNotEmpty(org.getOrgUniqueId()) && !org.getOrgUniqueId().equals(formBean.getOrgUniqueId())) {
+            logUtils.createAndLogDetails(id, Org.JSON_UNIQUE_ORGANIZATION_ID, org.getOrgUniqueId(),
+                    formBean.getOrgUniqueId(), type);
         }
     }
 

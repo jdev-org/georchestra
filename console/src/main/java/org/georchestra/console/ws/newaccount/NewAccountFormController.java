@@ -179,8 +179,8 @@ public final class NewAccountFormController {
     public void initForm(WebDataBinder dataBinder) {
         dataBinder.setAllowedFields("firstName", "surname", "email", "phone", "org", "title", "description", "uid",
                 "password", "confirmPassword", "privacyPolicyAgreed", "consentAgreed", "createOrg", "orgName",
-                "orgShortName", "uniqueOrganizationId", "orgAddress", "orgType", "orgCities", "orgDescription", "orgUrl", "orgMail", "orgLogo",
-                "recaptcha_response_field");
+                "orgShortName", "orgUniqueId", "orgAddress", "orgType", "orgCities", "orgDescription", "orgUrl",
+                "orgMail", "orgLogo", "recaptcha_response_field");
     }
 
     @RequestMapping(value = "/account/new", method = RequestMethod.GET)
