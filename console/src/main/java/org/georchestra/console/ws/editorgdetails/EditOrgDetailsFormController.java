@@ -199,8 +199,8 @@ public class EditOrgDetailsFormController {
         }
 
         if (StringUtils.isNotEmpty(org.getOrgUniqueId()) && !org.getOrgUniqueId().equals(formBean.getOrgUniqueId())) {
-            logUtils.createAndLogDetails(id, Org.JSON_UNIQUE_ORGANIZATION_ID, org.getOrgUniqueId(),
-                    formBean.getOrgUniqueId(), type);
+            logUtils.createAndLogDetails(id, Org.JSON_ORG_UNIQ_ID, org.getOrgUniqueId(), formBean.getOrgUniqueId(),
+                    type);
         }
     }
 

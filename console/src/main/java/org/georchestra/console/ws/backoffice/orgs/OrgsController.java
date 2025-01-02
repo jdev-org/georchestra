@@ -501,7 +501,7 @@ public class OrgsController {
         org.setUrl(json.optString(Org.JSON_URL));
         org.setLogo(json.optString(Org.JSON_LOGO));
         org.setMail(json.optString(Org.JSON_MAIL));
-        org.setOrgUniqueId(json.optString(Org.JSON_ORG_UNIQUE_ID));
+        org.setOrgUniqueId(json.optString(Org.JSON_ORG_UNIQ_ID));
     }
 
     /**
