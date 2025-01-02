@@ -66,8 +66,7 @@ public class OrganizationsApiImpl implements OrganizationsApi {
                 .map(orgMapper::map);
     }
 
-
-    @Override 
+    @Override
     public Optional<Organization> findByOrgUniqueId(String orgUniqueId) {
         return Optional.ofNullable(orgsDao.findByOrgUniqueId(orgUniqueId))//
                 .filter(not(Org::isPending))//

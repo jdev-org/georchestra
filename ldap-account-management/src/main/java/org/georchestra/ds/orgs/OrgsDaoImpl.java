@@ -203,8 +203,9 @@ public class OrgsDaoImpl implements OrgsDao {
                     org.setMembers(asStringStream(attrs, "member").map(LdapNameBuilder::newInstance)
                             .map(LdapNameBuilder::build).map(name -> name.getRdn(name.size() - 1).getValue().toString())
                             .collect(Collectors.toList()));
-                    org.setPending(pending);
                     org.setOrgUniqueId(asStringStream(attrs, "orgUniqueId").collect(joining(",")));
+                    org.setPending(pending);
+
                     return org;
                 }
             };
@@ -222,15 +223,13 @@ public class OrgsDaoImpl implements OrgsDao {
             if (org.getUniqueIdentifier() == null) {
                 org.setUniqueIdentifier(UUID.randomUUID());
             }
-            if(org.getOrgUniqueId() != null) {
-                context.setAttributeValue("orgUniqueId", org.getOrgUniqueId());
-            }
             setOrDeleteField(context, "mail", org.getMail());
             setOrDeleteField(context, "georchestraObjectIdentifier", org.getUniqueIdentifier().toString());
             setOrDeleteField(context, "knowledgeInformation", org.getNote());
             setOrDeleteField(context, "description", org.getDescription());
             setOrDeleteField(context, "labeledURI", org.getUrl());
             setOrDeletePhoto(context, "jpegPhoto", org.getLogo());
+            setOrDeleteField(context, "orgUniqueId", org.getOrgUniqueId());
         }
 
         @Override
