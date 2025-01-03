@@ -258,6 +258,7 @@ public final class NewAccountFormController {
                 org.setUrl(formBean.getOrgUrl());
                 org.setLogo(formBean.getOrgLogo());
                 org.setMail(formBean.getOrgMail());
+                org.setOrgUniqueId(formBean.getOrgUniqueId());
                 // Parse and store cities
                 orgCities = orgCities.trim();
                 if (orgCities.length() > 0)
