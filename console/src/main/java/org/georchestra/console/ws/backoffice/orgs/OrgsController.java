@@ -204,6 +204,10 @@ public class OrgsController {
      * plante, 73059 Chambrille", "members": [ "testadmin", "testuser" ] }
      *
      */
+    /**
+     * TODO:
+     * Control orgUniqueId unicity
+     */
     @RequestMapping(value = REQUEST_MAPPING
             + "/{commonName:.+}", method = RequestMethod.PUT, produces = "application/json; charset=utf-8")
     @ResponseBody
@@ -214,6 +218,10 @@ public class OrgsController {
 
         // Parse Json
         JSONObject json = this.parseRequest(request);
+
+        if(!this.validation.validateOrgUnicity(json)) {
+            throw new IOException("Organization : already exists");
+        }
 
         // Validate request against required fields for admin part
         if (!this.validation.validateOrgField("name", json)) {
@@ -276,6 +284,10 @@ public class OrgsController {
     public Org createOrg(HttpServletRequest request) throws IOException, JSONException {
         // Parse Json
         JSONObject json = this.parseRequest(request);
+
+        if(!this.validation.validateOrgUnicity(json)) {
+            throw new IOException("An organization with this identification number already exists.");
+        }
 
         // Validate request against required fields for admin part
         if (!this.validation.validateOrgField("shortName", json)) {

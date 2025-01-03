@@ -26,8 +26,11 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.georchestra.ds.orgs.Org;
+import org.georchestra.ds.orgs.OrgsDao;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
 
@@ -44,6 +47,9 @@ import org.springframework.validation.Errors;
  *
  */
 public class Validation {
+
+    @Autowired
+    private OrgsDao orgDao;
 
     private Set<String> requiredUserFields;
     private Set<String> requiredOrgFields;
@@ -190,5 +196,30 @@ public class Validation {
             return false;
         }
         return true;
+    }
+
+    public boolean validateOrgUnicityByUniqueId(String orgUniqueId) {
+        boolean isUniqueOrgId = true;
+        Org findByOrgUniqueId = this.orgDao.findByOrgUniqueId(orgUniqueId);
+        if(findByOrgUniqueId != null) {
+            return false;
+        }
+        return isUniqueOrgId;
+    }
+
+    public boolean validateOrgUniqueIdField(String orgUniqueId, Errors errors) {
+        if(!this.validateOrgUnicityByUniqueId(orgUniqueId)) {
+            errors.rejectValue("orgUniqueId", "error.orgUniqueIdExists", "orgUniqueIdExists");
+            return false;
+        }
+        return true;
+    }
+
+    public boolean validateOrgUnicity(JSONObject json) {
+        boolean isUniqueOrg = true;
+        if(json.has("orgUniqueId")) {
+            isUniqueOrg = this.validateOrgUnicityByUniqueId(json.getString("orgUniqueId"));
+        }
+        return isUniqueOrg;
     }
 }

@@ -410,6 +410,7 @@ public final class NewAccountFormController {
         validation.validateUserField("title", formBean.getTitle(), result);
         validation.validateUserField("description", formBean.getDescription(), result);
 
+        // unique orgUniqueId value
         if (formBean.getCreateOrg() && !result.hasErrors()) {
             validation.validateOrgField("name", formBean.getOrgName(), result);
             validation.validateOrgField("shortName", formBean.getOrgShortName(), result);
@@ -419,6 +420,7 @@ public final class NewAccountFormController {
             validation.validateOrgField("description", formBean.getOrgDescription(), result);
             validation.validateOrgField("logo", formBean.getOrgLogo(), result);
             validation.validateOrgField("orgUniqueId", formBean.getOrgUniqueId(), result);
+            validation.validateOrgUniqueIdField(formBean.getOrgUniqueId(), result);
             validation.validateUrlFieldWithSpecificMsg("orgUrl", formBean.getOrgUrl(), result);
         } else {
             validation.validateUserField("org", formBean.getOrg(), result);
