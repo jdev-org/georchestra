@@ -418,6 +418,7 @@ public final class NewAccountFormController {
             validation.validateOrgField("url", formBean.getOrgUrl(), result);
             validation.validateOrgField("description", formBean.getOrgDescription(), result);
             validation.validateOrgField("logo", formBean.getOrgLogo(), result);
+            validation.validateOrgField("orgUniqueId", formBean.getOrgUniqueId(), result);
             validation.validateUrlFieldWithSpecificMsg("orgUrl", formBean.getOrgUrl(), result);
         } else {
             validation.validateUserField("org", formBean.getOrg(), result);
