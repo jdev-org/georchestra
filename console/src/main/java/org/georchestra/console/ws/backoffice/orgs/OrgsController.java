@@ -205,8 +205,7 @@ public class OrgsController {
      *
      */
     /**
-     * TODO:
-     * Control orgUniqueId unicity
+     * TODO: Control orgUniqueId unicity
      */
     @RequestMapping(value = REQUEST_MAPPING
             + "/{commonName:.+}", method = RequestMethod.PUT, produces = "application/json; charset=utf-8")
@@ -219,7 +218,7 @@ public class OrgsController {
         // Parse Json
         JSONObject json = this.parseRequest(request);
 
-        if(!this.validation.validateOrgUnicity(json)) {
+        if (!this.validation.validateOrgUnicity(json)) {
             throw new IOException("Organization : already exists");
         }
 
@@ -285,7 +284,7 @@ public class OrgsController {
         // Parse Json
         JSONObject json = this.parseRequest(request);
 
-        if(!this.validation.validateOrgUnicity(json)) {
+        if (!this.validation.validateOrgUnicity(json)) {
             throw new IOException("An organization with this identification number already exists.");
         }
 

@@ -22,7 +22,9 @@ package org.georchestra.console.ws.utils;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -198,17 +200,29 @@ public class Validation {
         return true;
     }
 
-    public boolean validateOrgUnicityByUniqueId(String orgUniqueId) {
-        boolean isUniqueOrgId = true;
+    public boolean validateOrgUnicityByUniqueId(String orgUniqueId, String uuid) {
+        // case - not value to verify
+        if (orgUniqueId == null || orgUniqueId.isEmpty()) {
+            return true;
+        }
+        // test if org with same value already exists
         Org findByOrgUniqueId = this.orgDao.findByOrgUniqueId(orgUniqueId);
-        if(findByOrgUniqueId != null) {
+        // No org exists with this field value
+        if (findByOrgUniqueId == null) {
+            return true;
+        }
+        // No uuid to compare means that's an org creation
+        // and at this step, an org already exists with this orgUniqueId
+        if (uuid == null) {
+            // we can't validate this orgUniqueId that already exists
             return false;
         }
-        return isUniqueOrgId;
+        // Control if this is same org update
+        return Objects.equals(findByOrgUniqueId.getUniqueIdentifier(), UUID.fromString(uuid));
     }
 
-    public boolean validateOrgUniqueIdField(String orgUniqueId, Errors errors) {
-        if(!this.validateOrgUnicityByUniqueId(orgUniqueId)) {
+    public boolean validateOrgUniqueIdField(String orgUniqueId, String uniqueId, Errors errors) {
+        if (!this.validateOrgUnicityByUniqueId(orgUniqueId, uniqueId)) {
             errors.rejectValue("orgUniqueId", "error.orgUniqueIdExists", "orgUniqueIdExists");
             return false;
         }
@@ -217,8 +231,8 @@ public class Validation {
 
     public boolean validateOrgUnicity(JSONObject json) {
         boolean isUniqueOrg = true;
-        if(json.has("orgUniqueId")) {
-            isUniqueOrg = this.validateOrgUnicityByUniqueId(json.getString("orgUniqueId"));
+        if (json.has("orgUniqueId")) {
+            isUniqueOrg = this.validateOrgUnicityByUniqueId(json.getString("orgUniqueId"), json.getString("uuid"));
         }
         return isUniqueOrg;
     }
