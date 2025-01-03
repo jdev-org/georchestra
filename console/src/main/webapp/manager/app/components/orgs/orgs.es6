@@ -19,7 +19,6 @@ class OrgsController {
         org.membersCount = org.members.length
         delete org.members
       })
-      console.log(this.orgs)
       this.simplifiedOrgs = this.orgs.map((org) => {
         return { id: org.id, name: org.name, shortName: org.shortName, membersCount: org.membersCount, pending: org.pending, status: org.status, orgUniqueId: org.orgUniqueId }
       })
@@ -58,7 +57,6 @@ class OrgsController {
     const $router = this.$injector.get('$router')
     const $location = this.$injector.get('$location')
     const $httpDefaultCache = this.$injector.get('$cacheFactory').get('$http')
-    console.log(this.newInstance)
 
     this.newInstance.$save(
       () => {
