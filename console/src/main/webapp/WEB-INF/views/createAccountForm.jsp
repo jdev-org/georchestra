@@ -109,7 +109,7 @@
                     </script>
 
                     <t:input path="orgUniqueId" required="${orgUniqueIdRequired}">
-                        <jsp:attribute name="orgUniqueId"><s:message code="org.creation.orgUniqueId"/></jsp:attribute>
+                        <jsp:attribute name="label"><s:message code="org.creation.orgUniqueId"/></jsp:attribute>
                     </t:input>
 
                     <t:textarea path="orgAddress" required="${orgAddressRequired}">

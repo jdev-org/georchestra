@@ -198,10 +198,10 @@ public class EditOrgDetailsFormController {
             logUtils.createAndLogDetails(id, Org.JSON_MAIL, org.getMail(), formBean.getMail(), type);
         }
 
-        if (StringUtils.isNotEmpty(org.getOrgUniqueId()) && !org.getOrgUniqueId().equals(formBean.getOrgUniqueId())) {
-            logUtils.createAndLogDetails(id, Org.JSON_ORG_UNIQ_ID, org.getOrgUniqueId(), formBean.getOrgUniqueId(),
-                    type);
+        if (!org.getOrgUniqueId().equals(formBean.getOrgUniqueId())) {
+            logUtils.createAndLogDetails(id, Org.JSON_ORG_UNIQ_ID, org.getOrgUniqueId(), formBean.getAddress(), type);
         }
+
     }
 
 }
